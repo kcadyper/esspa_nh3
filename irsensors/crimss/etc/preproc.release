@@ -1,0 +1,13 @@
+  &preprocInput
+    irSensorFile   = 'data/L1b/SNDR.SNPP.CRIS.20150701T0212.m06.g023.L1B_NSR.std.v01_08.G.170428170559.nc'
+    mwSensorFile   = 'data/L1b/SNDR.SNPP.ATMS.20150701T0212.m06.g023.L1B.std.v01_08.G.170428185959.nc'
+    nwpDir         = 'data/atmosphere/'
+    AuxFile        = 'data/intermed/aux.nc'
+    MWradFile      = 'data/intermed/radMW.nc'
+    mwBiasCorrFile = 'data/instruments/ATMS_bias_correction.nc'
+    independentFOV =  .TRUE.
+    nwpRes         =  0.5
+    nwpDt          =  6
+ /
+
+

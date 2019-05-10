@@ -1,0 +1,25 @@
+#==============================================================================
+#
+# Top level Makefile
+#
+#==============================================================================
+
+# Define macros and rules
+
+# Main targets
+all: crimss
+
+crimss:
+	( cd src; $(MAKE) ROOTPATH=.. EXECNAME=esspa PREPNAME=preproc BANCNAME=BuildAncillary);
+
+clean: 
+	( cd src/; $(MAKE) clean ROOTPATH=.. EXECNAME=esspa PREPNAME=preproc BANCNAME=BuildAncillary; );
+
+ifeq ($(RELEASE),)
+RELEASE = test_version.0.0.0
+endif
+TAR_DIR = $(RELEASE) #working directory name for release, e.g., CrIMSS_release_0.0.0
+GZ_FILE = $(TAR_DIR).tar.gz
+tar: 
+	@echo "compressing ..."
+	tar -cf - $(TAR_DIR) | gzip > $(GZ_FILE)

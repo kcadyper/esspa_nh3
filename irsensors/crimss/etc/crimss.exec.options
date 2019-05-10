@@ -1,0 +1,59 @@
+import os
+from exeLib import pyIexe
+
+execBase={
+          'aux':
+	       {'command': '$(binaux)/'+'$(ARCH)'+'/GetEnvData',
+	        'type': pyIexe.fortran,
+	        'keys': {'cfgTemplate': '$(defaultCfg)',
+	                 'cfgPath': '$(run)/$(namelist)',
+	                 'printPath': '$(run)/aux.log.asc'},
+               },
+          'getl2':
+	       {'command': '$(bin)/'+'$(ARCH)'+'/BuildAncillary',
+	        'type': pyIexe.fortran,
+	        'keys': {'cfgTemplate': '$(etc)/$(conf_l2)',
+	                 'cfgPath': '$(run)/$(namelist_l2)',
+	                 'printPath': '$(run)/getl2.log.asc'},
+               },
+          'sim':
+	       {'command': '$(bin)/'+'$(ARCH)'+'/sim_crimss',
+	        'type': pyIexe.fortran,
+	        'keys': {'cfgTemplate': '$(defaultCfg)',
+	                 'cfgPath': '$(run)/$(namelist)',
+	                 'printPath': '$(run)/$(simlog)'},
+               },
+          'retr':
+	       {'command': '$(bin)/'+'$(ARCH)'+'/crimss_esspa',
+	         'type': pyIexe.fortran,
+	         'keys': {'cfgTemplate': '$(defaultCfg)',
+	                  'cfgPath': '$(run)/$(namelist)',
+		          'printPath': '$(run)/$(retrlog)'},
+	         },
+          'directives':
+	       {'command': 'foo',
+	        'type': pyIexe.fortran,
+	        'keys': {'cfgTemplate': '$(defaultCfg)',
+	                 'cfgPath': '$(etc)/$(namelist)',
+	                 'printPath': '$(run)/$(directiveLog)'},
+               },
+          'ppdirectives':
+	       {'command': 'foo',
+	        'type': pyIexe.fortran,
+	        'keys': {'cfgTemplate': '$(ppcfg)',
+	                 'cfgPath': '$(etc)/$(ppNamelist)',
+	                 'printPath': '$(run)/$(directiveLog)'},
+               },
+          'preproc':
+		   {'command': '$(bin)/'+'$(ARCH)'+'/preprocessor',
+	         'type': pyIexe.fortran,
+	         'keys': {'cfgTemplate': '$(ppcfg)',
+	                  'cfgPath': '$(run)/$(ppNamelist)',
+		          'printPath': '$(run)/$(pplog)'},
+	         },
+          'nwp':
+		   {'command': 'python ./src/preproc/crimssNWP.py "$(IRsensorFile)" "$(gfcDIR)" "$(nwpDIR)"',
+	         'type': pyIexe.system,
+	         'keys': {'printPath': '$(run)/$(nwplog)'},
+	         }
+	}

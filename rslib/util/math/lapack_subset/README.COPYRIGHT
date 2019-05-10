@@ -1,0 +1,12 @@
+*******************************************************************
+
+The subroutines in the "lapack" subdirectories
+have been obtained from the LAPACK set of routines for
+solving various numerical problems.  From the LAPACK
+user information:
+
+"LAPACK is a freely-available software package.  It is available
+from netlib via anonymous ftp and the World Wide Web.  Thus,
+it can be included in commercial software packages (and has been)."
+
+*******************************************************************

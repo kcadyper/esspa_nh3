@@ -1,0 +1,71 @@
+  &generalControl
+    nprofs=          12150
+    enableScatter=  .FALSE.
+    statRetrOn=     .FALSE.
+    MWretrOn=       .FALSE
+    primaryRetrOn=  .TRUE.
+    secondaryRetrOn=.FALSE.
+    imgDataOn=      .FALSE.
+    algConfig=      './data/input_param/standard_crimss_config.in'
+    bkgDataFiles=
+'./data/input_param/nh3_bkg_sfct.nc','./data/input_param/cov_crims_sfc_v1_stdForm_rev2.nc','./data/input_param//cov_crims_sfc_v1_stdForm_rev2.nc'
+    RetrMWfile=     'NULL'
+    GuessFile=      './run/guess.nc'
+    AuxFile=        './data/input_param/senex_scene.nc'
+    RadMWfile=      'NULL'
+    RadIRfile=       '/project/p1913/esspa4_l2/l1_data/SNDR.SNPP.CRIS.20150422T0800.m06.g081.L1B_NSR.std.v01_08.G.170423084517.nc'
+    RetrRegrFile=   './run/retr.regr.nc'
+    RetrIRfile=     './run/retr.sfct.ir.nc'
+    linInvertFile=  'NULL'
+    independentFOV= .TRUE.
+    apodizationType = 2
+ /
+
+ &externControl
+    ldEmissExtern ='NULL'
+    IRemissExtFile='./run/l2.emiss.nc'
+    bkgrdExtern   ='./run/l2.nc'
+    extFlgTemp    =.TRUE.
+    extFlgTskin   =.TRUE.
+    extFlgPsfc    =.TRUE.
+    extFlgWind    =.FALSE.
+    extFlgCldLiq  =.FALSE.
+    extFlgCldIce  =.FALSE.
+    extFlgMol     =.TRUE.
+    extFlgEmIR    =.TRUE.
+ /
+
+ &sensorSpecific
+    nedtFile           ='NULL'
+    noiseReductFactFile='NULL'
+    osscoefs_mw        ='NULL'
+    ossoptdpth_mw      ='NULL'
+    osscoefs_ir ='./data/sensor_constants/suomi-cris-B1B2B3-hamming-loc-clear-19V-M12.4-v1.0.train.sel'
+    ossoptdpth_ir ='./data/sensor_constants/suomi-cris-B1B2B3-hamming-loc-clear-19V-M12.4-v1.0.train.lut'
+
+
+
+    osspred_ir         ='NULL'
+    classAtmosConfig   ='./etc/classAtmos.in'
+    classSfcMWconfig   ='./etc/classSfcMW.in'
+    classSfcIRconfig   ='./etc/classSfcIR.in'
+    chanFileName       ='./data/sensor_constants/crimss_atms_cris_sfct_channels.nc'
+    nednFile           ='./data/sensor_constants/pdr_noise.NEW.dat'
+ /
+
+ &RTinput
+    molOnRT ='H2O','NH3'
+    cloudTabFile  ='NULL'
+    solarfluxFile ='./data/input_param/newkur.dat'
+    defProfFile='./data/input_param/defProfFile'
+    Planck2ndOrderTaylor = .TRUE.
+/
+
+ &statControl
+    regrFile='NULL'
+ /
+
+ &primaryControl
+    primaryMWon=.FALSE.
+    genLinInvert=.FALSE.
+ /

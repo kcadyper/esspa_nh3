@@ -1,0 +1,15 @@
+#!/bin/csh
+
+cd irsensors/crimss
+
+# Get L2 data in appropriate format for ESSPA; also fills each FOV with FOR data
+bin_nh3/linux_x86_64/BuildAncillary < run/alg_directives.l2.in
+
+# Retrieves surface temperature
+bin_sfct/linux_x86_64/crimss_esspa < run/alg_directives.sfct.in
+
+# Inserts surface temperature into file with L2 data 
+bin_sfct/linux_x86_64/ModTskinAnc < run/alg_directives.mod_l2.in
+
+# Retrieves NH3
+bin_nh3/linux_x86_64/crimss_esspa < run/alg_directives.nh3.in

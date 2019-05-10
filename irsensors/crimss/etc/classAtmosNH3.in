@@ -1,0 +1,5 @@
+ &classConfig
+    disable = .FALSE.
+    channelMissingIsFatal = .TRUE.
+    fileThresh = '/project/p1913/esspa3/nh3_retv_data/classThresh.dat'
+ /

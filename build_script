@@ -1,0 +1,36 @@
+#!/bin/csh
+
+setenv LD_LIBRARY_PATH /opt/gcc/gcc-4.7.3/lib64:/opt/packages/netcdf-4.4.1_gcc4/lib:/opt/packages/hdf5-1.8.19_gcc4/lib
+
+setenv RSLIB_PATH /peate_sci/kcadyper/esspa11_dbg/rslib
+
+cd irsensors/crimss
+
+/bin/rm -rf bin bin_nh3 bin_sfct
+
+# Build SFCT retrieval code
+cd ../../rslib
+
+make clean
+
+make
+
+cd ../irsensors/crimss
+
+make 
+
+mv bin bin_sfct
+
+
+# Build NH3 retrieval code
+cd ../../rslib
+
+make clean
+
+make CUSTOM=AtmClass_BtDiff
+
+cd ../irsensors/crimss
+
+make
+
+mv bin bin_nh3

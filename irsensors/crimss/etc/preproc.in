@@ -1,0 +1,13 @@
+  &preprocInput
+    irSensorFile   = '/nas/project_cellar/p1918/data/SNPP-GDISC/2015/07/01/crisl1b/SNDR.SNPP.CRIS.20150701T0212.m06.g023.L1B_NSR.std.v01_08.G.170428170559.nc'
+    mwSensorFile   = '/nas/project_cellar/p1918/data/SNPP-GDISC/2015/07/01/atmsl1b/SNDR.SNPP.ATMS.20150701T0212.m06.g023.L1B.std.v01_08.G.170428185959.nc'
+    nwpDir         = '/nas/project/p1918/data/GFS/v004'
+    AuxFile        = './run/aux.asc'
+    MWradFile      = './run/radMW.nc'
+    mwBiasCorrFile = '/nas/data/rs/UR-Input/SensorModel/atms/bias.correction/2018/ATMS_bias_correction.nc'
+    independentFOV =  .TRUE.
+    nwpRes         =  0.5
+    nwpDt          =  6
+ /
+
+

@@ -1,0 +1,129 @@
+  &generalControl
+    nprofs=         500
+    enableScatter=  .FALSE.
+    statRetrOn=     .FALSE.
+    MWretrOn=       .TRUE.
+    primaryRetrOn=  .TRUE.
+    secondaryRetrOn=.FALSE.
+    imgDataOn=      .FALSE.
+    algConfig=      './data/input_param/standard_crimss_config.in'
+    bkgDataFiles=   '/nas/data/rs/UR-Input/BackgroundStats/crimss/atmGlobalECMWF_O3fixed_scn_hybr101_atm5classandGlobal.nc','/nas/data_cellar/cris/DataBases/Statistics/extra_covariances/cov_crims_sfc_v1_stdForm_rev2.nc','/nas/data_cellar/cris/DataBases/Statistics/extra_covariances/cov_crims_sfc_v1_stdForm_rev2.nc'
+    RetrMWfile=     './run/retr.mw.nc'
+    GuessFile=      './run/guess.nc'
+    AuxFile=        './run/aux.asc'
+    RadMWfile=      './run/radMW.nc'
+    RadIRfile=      './run/radIR.nc'
+    RetrRegrFile=   './run/retr.regr.nc'
+    RetrIRfile=     './run/retr.ir.nc'
+    linInvertFile=  'NULL'
+    independentFOV= .TRUE.
+ /
+
+ &externControl
+    ldEmissExtern ='NULL'
+    IRemissExtFile='NULL'
+    bkgrdExtern   ='NULL'
+    extFlgTemp    =.FALSE.
+    extFlgTskin   =.FALSE.
+    extFlgPsfc    =.FALSE.
+    extFlgWind    =.FALSE.
+    extFlgCldLiq  =.FALSE.
+    extFlgCldIce  =.FALSE.
+    extFlgMol     =.FALSE.,.FALSE.
+    extFlgEmIR    =.FALSE.
+ /
+
+ &sensorSpecific
+    nedtFile           ='/nas/data_cellar/cris/DataBases/Sensor/ATMS/NASAnoise.dat'
+    noiseReductFactFile='/nas/data_cellar/cris/DataBases/Sensor/ATMS/nrf_atms_ID2_fmt1.dat'
+    osscoefs_mw        ='/nas/data/rs/UR-Input/OSS_model/MW/atms/NPP-ATMS-clear-2V-M5.2-0.05K-R-v3.0'
+    ossoptdpth_mw      ='/nas/data/rs/UR-Input/OSS_model/MW/atms/LUT-23-191-2V-M5.2-v3.0'
+    osscoefs_ir        ='/nas/data_cellar/cris/DataBases/OSS/CrIS/blackman/sel_cris_swap_ver1.2'
+    ossoptdpth_ir      ='/nas/data_cellar/cris/DataBases/OSS/CrIS/blackman/odCrIS_swap_ver1.2'
+    osspred_ir         ='NULL'
+    classAtmosConfig   ='./etc/classAtmos5.in'
+    classSfcMWconfig   ='./etc/classSfcMW.in'
+    classSfcIRconfig   ='./etc/classSfcIR.in'
+    chanFileName       ='/nas/data_cellar/cris/DataBases/Sensor/CrIS/channel/crimss_atms_cris_allchannels.nc'
+    nednFile           ='/nas/data_cellar/cris/DataBases/Sensor/CrIS/pdr_noise.NEW.dat'
+ /
+
+ &RTinput
+    molOnRT ='H2O','O3'
+    cloudTabFile  ='/nas/data/rs/UR-Input/CldModel/IR/irCloudTab_iSz0.25_wSz0.25_iT10_Spec5_iDeff5-200_wDeff2-40_Wn640-2750_T170-270.nc'
+    solarfluxFile ='/nas/data_cellar/cris/DataBases/OSS/GENERIC/newkur.dat'
+    defProfFile='/nas/data_cellar/cris/DataBases/OSS/GENERIC/defProfFile'
+    Planck2ndOrderTaylor = .TRUE.
+/
+
+ &statControl
+    regrFile='NULL'
+ /
+
+ &primaryControl
+    primaryMWon=.TRUE.
+    genLinInvert=.FALSE.
+ /
+
+# Below namelists are for the simulator
+
+ &stdContrl
+    nprofs=500
+    debug=.FALSE.
+    mwCld=1
+    iCell=1
+    iembkgflg  =0
+    DynamicNoise =.FALSE.
+    enableScatter=.FALSE.
+    molOnRT = 'H2O','O3'
+    kchan=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+    AuxFile='./run/aux.asc'
+    RadFile='./run/radMW.nc'
+ /
+
+ &SimFiles
+    Scenefile='/nas/data/rs/UR-Input/TestScenes/crimss/atmGlobalECMWF_O3fixedIndepV2a_scn_hybr101.nc'
+    addNoise=.TRUE.
+ /
+
+ &sensorSpecificFiles
+    nedtFile      ='/nas/data_cellar/cris/DataBases/Sensor/ATMS/NASAnoise.dat'
+    noiseReductFactFile='/nas/data_cellar/cris/DataBases/Sensor/ATMS/nrf_atms_ID2_fmt1.dat'
+    osscoefs      ='/nas/data/rs/UR-Input/OSS_model/MW/atms/NPP-ATMS-clear-2V-M5.2-0.05K-R-v3.0'
+    ossoptdpth    ='/nas/data/rs/UR-Input/OSS_model/MW/atms/LUT-23-191-2V-M5.2-v3.0'
+ /
+
+ &externFiles
+    cloudTabFile  ='/nas/data/rs/UR-Input/CldModel/IR/irCloudTab_iSz0.25_wSz0.25_iT10_Spec5_iDeff5-200_wDeff2-40_Wn640-2750_T170-270.nc'
+    ldEmissExtern ='NULL'
+    bkgrdExtern   ='NULL'
+ /
+
+ &RetrFiles
+    algconfig='./data/input_param/standard_crimss_config.in'
+    covarFile='/nas/data/rs/UR-Input/BackgroundStats/crimss/atmGlobalECMWF_O3fixed_scn_hybr101_atm5classandGlobal.nc','/nas/data_cellar/cris/DataBases/Statistics/extra_covariances/cov_crims_sfc_v1_stdForm_rev2.nc'
+    RetrFile='./run/retr.mw.nc'
+    GuessFile='./run/guess.nc'
+ /
+
+ &IRinput
+    REGRESon=.FALSE.
+    PHYSon=.TRUE.
+    MWon=.TRUE.
+    flagDynCldMask=.FALSE.
+    iStrat=3
+    RadIRFile='./run/radIR.nc'
+    osscoefs_ir   ='/nas/data_cellar/cris/DataBases/OSS/CrIS/blackman/sel_cris_swap_ver1.2'
+    ossoptdpth_ir ='/nas/data_cellar/cris/DataBases/OSS/CrIS/blackman/odCrIS_swap_ver1.2'
+    chanFileName=  '/nas/data_cellar/cris/DataBases/Sensor/CrIS/channel/allchannels.new.dat'
+    nednFile=    '/nas/data_cellar/cris/DataBases/Sensor/CrIS/pdr_noise.NEW.dat'
+    solarfluxFile ='/nas/data_cellar/cris/DataBases/OSS/GENERIC/newkur.dat'
+    defProfFile='/nas/data_cellar/cris/DataBases/OSS/GENERIC/defProfFile'
+    regrFile=    'NULL'
+    RetrRegrFile=  './run/retr.regr.nc'
+    RetrIRFile=    './run/retr.ir.nc'
+ /
+
+ &IRsfcClass
+    pLandMaxOc = 0.0
+ /

@@ -1,0 +1,4 @@
+ &runModL2
+   fInOut='./run/l2.nc'
+   fRetv='./run/retr.sfct.ir.nc'
+/

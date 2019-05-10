@@ -1,0 +1,34 @@
+2/21/19
+
+Copy of esspa10 (no LM, sfct with Hamming, NH3 with SINC) for delivery to JPL.
+
+Objective is to have all necessary files in this directory.
+
+3/18/19
+
+Modified  rslib/util/retr/BackgroundModule.f90 to fix bug found at JPL :
+
+Hi, Igor
+ 
+After some effort I found the line of code that was causing a segmentation fault: in BackgroundModule.f90 the
+combineBkgSfcIR routine has an incorrect line:
+ 
+                dback0(sParG:eParG)=this%emRfExt
+ 
+This should be :
+ 
+dback0=this%emRfExt
+ 
+4/12/19
+
+Also modified GranuleReadModule.f90 to allow reading of different versions of the L2 data
+
+Today I found that I had ignored the fact that water vapor from L2 mmr relative to moist air. This may impact
+the retrievals slightly and should be fixed in the next round, along with the surface temperature retrieval.
+
+Correct conversion is below:
+
+mmr_nh3_d = mmr_nh3_w*(1+(mmr_wv_w/(1.0-mmr_wv_w))
+
+Then convert mmr_d to vmr_d as is already done in the code
+

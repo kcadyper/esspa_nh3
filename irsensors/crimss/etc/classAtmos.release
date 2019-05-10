@@ -1,0 +1,5 @@
+ &classConfig
+    disable = .FALSE.
+    channelMissingIsFatal=.TRUE.
+    coefsClass='data/atmosphere/classatm_ECMWF_scaled_TB_5classes_atms9-14_spread0.007.dat'
+ /

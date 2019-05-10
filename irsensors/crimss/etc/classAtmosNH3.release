@@ -1,0 +1,5 @@
+ &classConfig
+    disable = .FALSE.
+    channelMissingIsFatal = .TRUE.
+    fileThresh = 'data/atmosphere/classThresh.dat'
+ /

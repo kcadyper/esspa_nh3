@@ -1,0 +1,4 @@
+       !---maximum dimensions
+       integer, parameter :: mxchan=80 ! set 142 for hymn test
+       integer, parameter :: mxlev=101,mxcldmw=3
+       integer, parameter :: mxparg=2*mxlev+mxchan+10,mxpar=150

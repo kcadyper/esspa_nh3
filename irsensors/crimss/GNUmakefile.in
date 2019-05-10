@@ -1,0 +1,258 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# Makefile
+#
+# Copyright AER, Inc., 2017-. All rights Reserved.
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ifeq ($(ROOTPATH),)
+	ROOTPATH = ..
+endif
+
+ifeq ($(EXECNAME),)
+	EXECNAME = esspa
+endif
+
+ifeq ($(PREPNAME),)
+	PREPNAME = preproc
+endif
+
+ifeq ($(BANCNAME),)
+	BANCNAME = BuildAncillary
+endif
+
+ifeq ($(strip $(NH3)),true)
+    ATMOS_CLASS_METHOD =_BtDiff
+else
+    ATMOS_CLASS_METHOD =
+endif
+
+include make.macros
+include make.rules
+
+EXEC := $(EXECPATH)/$(EXECNAME)
+PREP := $(PREPPATH)/$(PREPNAME)
+BANC := $(BANCPATH)/$(BANCNAME)
+
+OBJS:= \
+	ddot.o \
+	dpotf2.o \
+	dpotrf.o \
+	dgemm.o \
+	dgemv.o \
+	dpotrs.o \
+	dscal.o \
+	dsyrk.o \
+	dtrsm.o \
+	ieeeck.o \
+	ilaenv.o \
+	lsame.o \
+	xerbla.o \
+	consts.o \
+	ncdf_module.o \
+	RandomMT.o \
+	gauss.o \
+	classatm.o \
+	angles.o \
+	grav.o \
+	planck.o \
+	errorHalt.o \
+	StateIndexModule.o \
+	MetFunctions.o \
+	ChkValid.o \
+	setxPtrR.o \
+	ReadStdInputs.o \
+	VertCoord.o \
+	MapBeamDefaults.o \
+	bkg_io_module.o \
+	regr_io_module.o \
+	rad_io_module.o \
+	SpectralOperations.o \
+	scene_io_module.o \
+	OSSPhysicalConstant.o \
+	OSSPracticalConstant.o \
+	type_kinds.o \
+	params_module.o \
+	subs_oss_addbl.o \
+	subs_oss_addbl_a.o \
+	oss_addbl_a.o \
+	oss_addbl.o \
+	adStack.o \
+	adBuffer.o \
+	CloudParameters.o \
+	CloudDataStruct.o \
+	CloudNameDictionary.o \
+	CloudTab.o \
+	CloudModule.o \
+	netCDFhelper.o \
+	AngleUtil.o \
+	EmisTab.o \
+	OSSMWmoduleSubs.o \
+	oss_mw_module.o \
+	MwSfcModule.o \
+	asolar_source_function.o \
+	OSSIRmoduleSubs.o \
+	oss_ir_module.o \
+	oss_ir_module_scat.o \
+	LvlInterp.o \
+	MapInvert.o \
+	ControlStructure.o \
+	MWobsStructure.o \
+	IRobsStructure.o \
+	ToolboxModule.o \
+	ChannelSelectionModule.o \
+	IRRTmodule.o \
+	AncillaryStructure.o \
+	FiniteDiffModule.o \
+	BackgroundModule.o \
+	ImgObsStructure.o \
+	setSfc.o \
+	SurfaceClassModule.o \
+	SensorData.o \
+	NoiseModule.o \
+	MeasErrStructure.o \
+	MWmeasErrModule.o \
+	IRReadStdInputs.o \
+	IRNoiseModule.o \
+	IRmeasErrModule.o \
+	LimitsModule.o \
+	CloudMitigateModule.o \
+	RadFile.o \
+	OutputStructure.o \
+	ncdfUtil.o \
+	ncdfUtil_c.o \
+	MWsensorReader.o \
+	IRsensorReader.o \
+	IOmodule.o \
+	RegrPrepModule.o \
+	Invert.o \
+	StatRetrModule.o \
+	ImgRTmodule.o \
+	MWRTmodule.o \
+	LinInvert.o \
+	GranuleMemModule.o \
+	AtmosClassModule${ATMOS_CLASS_METHOD}.o \
+	IRMapInvert.o \
+	MWretrModule.o \
+	PrimaryRetrModule.o \
+	SecondaryRetrModule.o \
+	RetrModule.o \
+	DriveRetr.o
+
+POBJS:= \
+	consts.o \
+	ncdf_module.o \
+	ncdfUtil.o \
+	ncdfUtil_c.o \
+	MWobsStructure.o \
+	IRobsStructure.o \
+	grav.o \
+	errorHalt.o \
+	StateIndexModule.o \
+	MetFunctions.o \
+	MapBeamDefaults.o \
+	rad_io_module.o \
+	scene_io_module.o \
+	date_module.o \
+	NWPprof.o \
+	MWsensorReader.o \
+	IRsensorReader.o \
+	Preprocessor.o
+
+BOBJS:= \
+	consts.o \
+	ncdf_module.o \
+	ncdfUtil.o \
+	ncdfUtil_c.o \
+	VertCoord.o \
+	errorHalt.o \
+	StateIndexModule.o \
+	MapBeamDefaults.o \
+	scene_io_module.o \
+	Dimensions.o \
+	GranuleReadModule.o \
+	BuildAncillary.o
+
+#############################
+####### build targets #######
+#############################
+
+ALL: $(EXEC) $(PREP) $(BANC)
+
+$(EXEC): $(OBJS)
+	test  -d ${EXECPATH} || mkdir -p ${EXECPATH}
+	${LDR} ${FFLAGS} ${INCLUDES} ${OBJS} ${LIBS} -o ${EXEC}
+
+$(PREP): $(POBJS)
+	test  -d ${EXECPATH} || mkdir -p ${EXECPATH}
+	${LDR} ${FFLAGS} ${INCLUDES} ${POBJS} ${LIBS} -o ${PREP}
+
+$(BANC): $(BOBJS)
+	test  -d ${EXECPATH} || mkdir -p ${EXECPATH}
+	${LDR} ${FFLAGS} ${INCLUDES} ${BOBJS} ${LIBS} -o ${BANC}
+
+AtmosClassModule.o: consts.o ToolboxModule.o ControlStructure.o MWobsStructure.o IRobsStructure.o
+setSfc.o: StateIndexModule.o
+SurfaceClassModule.o: ControlStructure.o MWobsStructure.o IRobsStructure.o setSfc.o
+IRmeasErrModule.o: ControlStructure.o IRobsStructure.o MeasErrStructure.o IRNoiseModule.o
+IRNoiseModule.o: IRReadStdInputs.o ToolboxModule.o
+GranuleMemModule.o: ControlStructure.o MWRTmodule.o StateIndexModule.o scene_io_module.o OutputStructure.o MWobsStructure.o IRobsStructure.o LinInvert.o
+ncdfUtil.o: ncdfUtil_c.o
+MWsensorReader.o IRsensorReader.o: ncdfUtil.o
+IOmodule.o: ncdf_module.o scene_io_module.o rad_io_module.o bkg_io_module.o RadFile.o ControlStructure.o OutputStructure.o MWobsStructure.o IRobsStructure.o ImgObsStructure.o AncillaryStructure.o StateIndexModule.o consts.o ToolboxModule.o VertCoord.o PrimaryRetrModule.o MWsensorReader.o IRsensorReader.o
+PrimaryRetrModule.o: consts.o ToolboxModule.o ControlStructure.o StateIndexModule.o BackgroundModule.o LinInvert.o Invert.o LvlInterp.o IRMapInvert.o MapInvert.o oss_ir_module.o oss_mw_module.o FiniteDiffModule.o ChkValid.o MWRTmodule.o IRRTmodule.o MWobsStructure.o IRobsStructure.o MeasErrStructure.o ChannelSelectionModule.o AncillaryStructure.o VertCoord.o
+RetrModule.o: consts.o StateIndexModule.o SurfaceClassModule.o AtmosClassModule.o ChannelSelectionModule.o MWRTmodule.o IRRTmodule.o ImgRTmodule.o StatRetrModule.o MWretrModule.o PrimaryRetrModule.o SecondaryRetrModule.o MeasErrStructure.o MWmeasErrModule.o IRmeasErrModule.o LimitsModule.o CloudMitigateModule.o MWobsStructure.o IRobsStructure.o ImgObsStructure.o AncillaryStructure.o ControlStructure.o OutputStructure.o IOmodule.o
+SecondaryRetrModule.o: ControlStructure.o StateIndexModule.o IRRTmodule.o IRobsStructure.o MeasErrStructure.o AncillaryStructure.o ChannelSelectionModule.o
+DriveRetr.o: RetrModule.o OutputStructure.o IOmodule.o StatRetrModule.o ControlStructure.o MWobsStructure.o IRobsStructure.o ImgObsStructure.o MWretrModule.o MWRTmodule.o IRRTmodule.o ImgRTmodule.o AncillaryStructure.o ChannelSelectionModule.o GranuleMemModule.o PrimaryRetrModule.o SecondaryRetrModule.o
+RadFile.o: rad_io_module.o
+gauss.o: RandomMT.o
+StateIndexModule.o: consts.o errorHalt.o
+grav.o: consts.o
+MetFunctions.o: consts.o StateIndexModule.o
+ChkValid.o: ncdf_module.o StateIndexModule.o consts.o MetFunctions.o
+LimitsModule.o: ToolboxModule.o ControlStructure.o ChkValid.o
+LinInvert.o: StateIndexModule.o LvlInterp.o Invert.o consts.o VertCoord.o
+setxPtrR.o: StateIndexModule.o
+CloudModule.o: CloudTab.o consts.o
+CloudTab.o: ncdf_module.o
+ChannelSelectionModule.o: ControlStructure.o MWobsStructure.o IRobsStructure.o
+AncillaryStructure.o: StateIndexModule.o
+ControlStructure.o: StateIndexModule.o VertCoord.o
+OutputStructure.o: StateIndexModule.o
+MapInvert.o: StateIndexModule.o LvlInterp.o VertCoord.o
+ReadStdInputs.o: StateIndexModule.o consts.o
+MWRTmodule.o: ToolboxModule.o StateIndexModule.o ControlStructure.o MWobsStructure.o oss_mw_module.o
+NoiseModule.o: consts.o oss_mw_module.o SensorData.o ReadStdInputs.o consts.o ToolboxModule.o gauss.o
+MWmeasErrModule.o: NoiseModule.o MeasErrStructure.o MWobsStructure.o ChannelSelectionModule.o ControlStructure.o
+BackgroundModule.o: StateIndexModule.o consts.o VertCoord.o ToolboxModule.o bkg_io_module.o LvlInterp.o MapInvert.o SpectralOperations.o
+IRMapInvert.o: StateIndexModule.o LvlInterp.o MapInvert.o VertCoord.o
+RegrPrepModule.o: StateIndexModule.o IRReadStdInputs.o
+CloudMitigateModule.o: ControlStructure.o ImgObsStructure.o
+StatRetrModule.o: StateIndexModule.o AncillaryStructure.o MWobsStructure.o IRobsStructure.o ControlStructure.o RegrPrepModule.o Invert.o
+MWretrModule.o: consts.o ToolboxModule.o ControlStructure.o BackgroundModule.o StateIndexModule.o MapInvert.o oss_mw_module.o ChkValid.o Invert.o MWRTmodule.o MWobsStructure.o MeasErrStructure.o AncillaryStructure.o ChannelSelectionModule.o
+CloudDataStruct.o: params_module.o CloudParameters.o
+CloudModule.o: params_module.o CloudParameters.o CloudDataStruct.o CloudTab.o OSSPracticalConstant.o OSSPhysicalConstant.o
+CloudNameDictionary.o: CloudParameters.o
+CloudTab.o: CloudParameters.o CloudDataStruct.o CloudNameDictionary.o
+oss_addbl.o oss_addbl_a.o: type_kinds.o params_module.o subs_oss_addbl.o
+oss_addbl.o: oss_addbl_a.o
+params_module.o: type_kinds.o
+subs_oss_addbl.o subs_oss_addbl_a.o: type_kinds.o params_module.o
+subs_oss_addbl_a.o: subs_oss_addbl.o
+OSSIRmoduleSubs..o: asolar_source_function.o params_module.o
+oss_ir_module.o oss_ir_module_scat.o: params_module.o OSSIRmoduleSubs.o asolar_source_function.o
+oss_ir_module_scat.o: CloudDataStruct.o oss_addbl.o oss_ir_module.o CloudModule.o
+EmisTab.o: netCDFhelper.o OSSPracticalConstant.o OSSPhysicalConstant.o AngleUtil.o
+MwSfcModule.o: EmisTab.o
+oss_mw_module.o: OSSMWmoduleSubs.o
+AngleUtil.o: OSSPhysicalConstant.o
+FiniteDiffModule.o: oss_ir_module.o ToolboxModule.o StateIndexModule.o VertCoord.o
+IRRTmodule.o: ControlStructure.o StateIndexModule.o oss_ir_module.o ToolboxModule.o
+GranuleReadModule.o: consts.o ncdfUtil.o ncdfUtil_c.o StateIndexModule.o
+rad_io_module.o bkg_io_module.o scene_io_module.o: ncdf_module.o MapBeamDefaults.o
+bkg_io_module.o scene_io_module.o: consts.o StateIndexModule.o
+Preprocessor.o: consts.o ncdfUtil.o ncdfUtil_c.o MWobsStructure.o IRobsStructure.o StateIndexModule.o MetFunctions.o rad_io_module.o scene_io_module.o date_module.o NWPprof.o IRsensorReader.o MWsensorReader.o 
+BuildAncillary.o: Dimensions.o ncdf_module.o StateIndexModule.o scene_io_module.o GranuleReadModule.o VertCoord.o
+clean:
+	@echo "cleaning local ..."
+	/bin/rm -f *.o *.mod

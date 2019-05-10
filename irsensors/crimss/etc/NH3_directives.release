@@ -1,0 +1,65 @@
+ &generalControl
+!    nprofs=12150
+    nprofs=500
+    enableScatter = .FALSE.
+    statRetrOn=.FALSE.
+    MWretrOn=.FALSE.
+    primaryRetrOn=.TRUE.
+    secondaryRetrOn=.FALSE.
+    imgDataOn=.FALSE.
+    algConfig='data/input_param/NH3_crimss_config.in'
+    bkgDataFiles='data/atmosphere/nh3_bkg.nc',
+    	      'data/surface/cov_crims_sfc_v1_stdForm_rev2.nc',
+    	      'data/surface/cov_crims_sfc_v1_stdForm_rev2.nc'
+    RetrMWfile='data/L2/retr.mw.nc'
+    GuessFile='data/L2/guess.nc'
+    AuxFile='data/L1b/aux.asc'
+    RadMWfile='data/L1b/radMW.nc'
+    RadIRfile='data/L1b/SNDR.SNPP.CRIS.20150422T2024.m06.g205.L1B_NSR.std.v01_08.G.170423111010.nc'
+    RetrRegrFile='data/L2/retr.regr.nc'
+    RetrIRfile='data/L2/retr.NH3.nc'
+    linInvertFile = 'NULL'
+    independentFOV= .TRUE.
+ /
+
+ &externControl
+    ldEmissExtern = 'NULL'
+    IRemissExtFile = 'data/intermed/l2.emiss.nc'
+    bkgrdExtern = 'data/intermed/l2.nc'    
+    extFlgTemp = .TRUE.
+    extFlgTskin = .TRUE.
+    extFlgPsfc = .TRUE.
+    extFlgWind = .FALSE.
+    extFlgCldLiq = .FALSE.
+    extFlgCldIce = .FALSE.
+    extFlgMol = .TRUE.
+    extFlgEmIR=.TRUE.
+ /    
+
+ &sensorSpecific
+    osscoefs_ir   ='data/rtm_coefficients/CrIS.sel.cmpr_ver1.2'
+    ossoptdpth_ir ='data/rtm_coefficients/CrIS.od.cmpr_ver1.2'
+    osspred_ir = 'NULL'
+    classAtmosConfig ='etc/classAtmosNH3.in'
+    classSfcMWconfig ='etc/classSfcMW.in'
+    classSfcIRconfig ='etc/classSfcIR.in'
+    chanFileName='data/instruments/crimss_atms_cris_nh3_channels.nc'
+    nednFile='data/instruments/pdr_noise.NEW.dat'
+ /
+
+ &RTinput
+    molOnRT = 'H2O','NH3' ! gases turned on for radiative transfer
+    cloudTabFile='data/clouds/irCloudTab_iSz0.25_wSz0.25_iT10_Spec5_iDeff5-200_wDeff2-40_Wn640-2750_T170-270.nc'
+    solarfluxFile= 'data/rtm_coefficients/newkur.dat'
+    defProfFile='data/rtm_coefficients/defProfFile'
+    Planck2ndOrderTaylor = .TRUE.
+/
+
+ &statControl
+    regrFile='NULL'
+ /
+
+ &primaryControl
+    primaryMWon=.FALSE.
+    genLinInvert = .FALSE.
+ /

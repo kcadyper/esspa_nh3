@@ -1,0 +1,135 @@
+# $Id$
+
+# Dictionary of variable names
+
+bin=./bin
+binaux=../generic/bin
+etc=./etc
+# All the absolute paths such as lib, dataPath and staticPath will be
+# updated in the top-level script for the release version.
+lib=/project/rs_sw/lib/rslib
+parPath=./data/input_param
+dataPath=/nas/data/rs/UR-Input
+oldDataPath=/nas/data_cellar/cris/DataBases
+staticPath=/nas/data/rs/static_data
+ossFilePath=$(dataPath)/OSS_model
+ossFilePathMW=$(ossFilePath)/MW/atms
+#ossFileVers=_Ifit0_hybrid
+ossFileVers=2V-M5.2
+ossFilePathIR=$(oldDataPath)/OSS/CrIS/blackman
+use2ndOrderPlanck=.FALSE.
+sensorModelPath=$(oldDataPath)/Sensor/ATMS
+sensorModelPathIR=$(oldDataPath)/Sensor/CrIS
+run=./run
+emisPath=$(staticPath)/sfc_emissivity/Prigent
+namelist=alg_directives.in
+simlog=sim.log.asc
+retrlog=retr.log.asc
+nwplog=nwp.log.asc
+ppNamelist=preproc.in
+pplog=pp.log.asc
+
+#++++++++++++++++++++++
+# instrumnet file
+#
+# To run real data, un-comment the revisions to AuxFile and RadIRfile below
+IRsensorFile = /nas/project_cellar/p1918/data/SNPP-GDISC/2015/07/01/crisl1b/SNDR.SNPP.CRIS.20150701T0212.m06.g023.L1B_NSR.std.v01_08.G.170428170559.nc
+MWsensorFile = /nas/project_cellar/p1918/data/SNPP-GDISC/2015/07/01/atmsl1b/SNDR.SNPP.ATMS.20150701T0212.m06.g023.L1B.std.v01_08.G.170428185959.nc
+mwBiasCorrFile = $(dataPath)/SensorModel/atms/bias.correction/2018/ATMS_bias_correction.nc
+gfcDIR = /nas/project/p1918/data/GFS/v004
+nwpDIR = /nas/project/p1918/data/GFS/v004
+nwpRes = 0.5
+nwpDt  = 6
+
+######################
+# Algorithm directives
+######################
+nprofs=500
+debugalg=.FALSE.
+mwCld=1
+icell=1
+#Flag to signal that EXTERNAL emissivity stats available
+iembkgflg=0
+DynamicNoise = .FALSE.
+Planck2ndOrderTaylor=.TRUE.
+molOnRT='H2O','O3'
+kchan=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+AuxFile=$(run)/aux.asc
+#AuxFile=$(run)/aux.nc
+RadMWfile=$(run)/radMW.nc
+RadIRfile=$(run)/radIR.nc
+#RadIRfile=$(IRsensorFile)
+enableScatter=.FALSE.
+independentFOV=.TRUE.
+
+#SimFiles
+#Scenefile=$(dataPath)/TestScenes/crimss/atmGlobalECMWF_O3fixedIndepV2_scn.nc
+#Scenefile=$(dataPath)/TestScenes/crimss/atmGlobalECMWF_O3fixedIndepV2a_scn.nc
+Scenefile=$(dataPath)/TestScenes/crimss/atmGlobalECMWF_O3fixedIndepV2a_scn_hybr101.nc
+addNoise=.TRUE.
+
+#sensorSpecificFiles
+nedtFile=$(sensorModelPath)/NASAnoise.dat
+#noiseReductFactFile=$(sensorModelPath)/nrf_atms_fmt1.dat
+noiseReductFactFile=$(sensorModelPath)/nrf_atms_ID2_fmt1.dat
+#osscoefs_mw=$(ossFilePathMW)/osscoef$(ossFileVers).bin
+#ossoptdpth_mw=$(ossFilePathMW)/osslut$(ossFileVers).bin
+osscoefs_mw=$(ossFilePathMW)/NPP-ATMS-clear-$(ossFileVers)-0.05K-R-v3.0
+ossoptdpth_mw=$(ossFilePathMW)/LUT-23-191-$(ossFileVers)-v3.0
+chanASCIIFileName=$(sensorModelPathIR)/channel/allchannels.new.dat
+chanFileName=$(sensorModelPathIR)/channel/crimss_atms_cris_allchannels.nc
+nednFile=$(sensorModelPathIR)/pdr_noise.NEW.dat
+osscoefs_ir=$(ossFilePathIR)/sel_cris_swap_ver1.2
+ossoptdpth_ir=$(ossFilePathIR)/odCrIS_swap_ver1.2
+osspred_ir=NULL
+solarfluxFile= $(oldDataPath)/OSS/GENERIC/newkur.dat
+defProfFile = $(oldDataPath)/OSS/GENERIC/defProfFile
+#classAtmosConfig =$(etc)/classAtmos.in
+classAtmosConfig =$(etc)/classAtmos5.in
+classSfcMWconfig =$(etc)/classSfcMW.in
+classSfcIRconfig =$(etc)/classSfcIR.in
+
+#externFiles
+cloudTabFile=$(dataPath)/CldModel/IR/irCloudTab_iSz0.25_wSz0.25_iT10_Spec5_iDeff5-200_wDeff2-40_Wn640-2750_T170-270.nc
+emisFile=NULL
+extBkgFile=NULL
+extFlgTemp=.FALSE.
+extFlgTskin=.FALSE.
+extFlgPsfc=.FALSE.
+extFlgWind=.FALSE.
+extFlgCldLiq=.FALSE.
+extFlgCldIce=.FALSE.
+extFlgMol=.FALSE.,.FALSE.
+extFlgEmIR=.FALSE.
+
+#RetrFiles
+algConfig=$(parPath)/standard_crimss_config.in
+#bkgDataAtm=$(dataPath)/BackgroundStats/standard/atmGlobalPfc950ECMWF_O3fixedC_cov.nc
+#bkgDataAtm=$(dataPath)/BackgroundStats/standard/atmGlobalECMWF_O3fixed_hybr101C_cov.nc
+bkgDataAtm=$(dataPath)/BackgroundStats/crimss/atmGlobalECMWF_O3fixed_scn_hybr101_atm5classandGlobal.nc
+bkgDataSfcMW=$(oldDataPath)/Statistics/extra_covariances/cov_crims_sfc_v1_stdForm_rev2.nc
+bkgDataSfcIR=$(oldDataPath)/Statistics/extra_covariances/cov_crims_sfc_v1_stdForm_rev2.nc
+RetrMWfile=$(run)/retr.mw.nc
+GuessFile=$(run)/guess.nc
+cascinfile=NULL
+cascoutfile=NULL
+
+#General control
+MWon=.TRUE.
+statRetrOn=.FALSE.
+MWretrOn=.TRUE.
+primaryRetrOn=.TRUE.
+secondaryRetrOn=.FALSE.
+imgDataOn=.FALSE.
+primaryMWon=.TRUE.
+regrFile=NULL
+RetrRegrFile=$(run)/retr.regr.nc
+RetrIRfile=$(run)/retr.ir.nc
+genLinInvert= .FALSE.
+linInvertFile=NULL
+IRemissExtFile=NULL
+
+######################
+# directive generation
+######################
+directiveLog=directives.log.asc

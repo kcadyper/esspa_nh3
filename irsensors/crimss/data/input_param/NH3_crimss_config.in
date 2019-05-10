@@ -1,0 +1,84 @@
+ &bkgtuning
+    backcldtopoc       = 550.   ! these values override what is in the background
+    backcldtopld       = 600.
+    backcldthkoc       = 100.
+    backcldthkld       = 100.
+    backcldamtoc       = 0.0
+    backcldamtld       = 0.0
+    backclddeffoc      = 15.0
+    backclddeffld      = 15.0
+    varcldtopoc        = 30000.
+    varcldtopld        = 22500.
+    varcldthkoc        = 1600.
+    varcldthkld        = 1.e-10
+    varcldamtoc        = 0.04
+    varcldamtld        = 0.04
+    varclddeffoc       = 25.0
+    varclddeffld       = 25.0
+    backicetopoc       = 250.   ! Background and covariance for IWP top and
+    backicetopld       = 250.   ! thickness.  These values will override what
+    backicethkoc       = 100.	! is in the background file.
+    backicethkld       = 100.
+    backiceamtoc       = 0.0
+    backiceamtld       = 0.0
+    backicedeffoc      = 80.0
+    backicedeffld      = 80.0
+    varicetopoc        = 40000.
+    varicetopld        = 22500.
+    varicethkoc        = 1600.
+    varicethkld        = 1.e-10
+    variceamtoc        = 0.0025
+    variceamtld        = 0.0025
+    varicedeffoc       = 900.0
+    varicedeffld       = 900.0
+ /
+
+ &guesslimits
+    cldcov             = 1.0e-12 ! covariance of clw when clw < 0
+    icecov             = 1.0e-12 ! covariance of iwp when iwp < 0
+    maxcldbasebak      = 900.   ! max pres val. allowed for cbase
+    htol               = 1.1    ! supersaturation tolerance in chkges
+    tmax               = 400.
+    tmin               = 50.    ! max and min temperature allowed in chkges
+    ctoplow            = 250.   ! lowest cloud top pressure allowed in chkges
+    icetoplow          = 100.   ! lowest iceCloud top pressure allowed in chkges
+    DeffLiqMin         = 2.     ! lowest liqCloud particleSize allowed in chkges
+    DeffIceMin         = 5.     ! lowest iceCloud particleSize allowed in chkges
+    DeffLiqMax         = 40.    ! highest liqCloud particleSize allowed in chkges
+    DeffIceMax         = 200.   ! highest iceCloud particleSize allowed in chkges
+    thickmin           = 50.    ! lowest cloud thickness allowed in chkges
+    Pmin4SaturChk      = 5000.  ! lowest pressure 4 checking supersaturation in chkges
+ /
+
+ &retrtuning
+    nxiterMw           = 9      ! maximum value allowed is 9
+    nxiter             = 9      ! maximum value allowed is 9
+    drad               = 0.0    ! rerr2=rerr**2 + drad**2
+    alpha1slope        = 3.0 	! slope = 1 / alpha1slope
+    alpha1int          = 1.4    ! alpha=float(mwiter)/alpha1slope + alpha1int
+    chisqconvMW        = 0.9    ! value of chisq needed for convergence in MW
+    chisqconv          = 0.7    ! value of chisq needed for convergence in IR
+    chisqRatioconv     = 0.1    ! value of chisq ratio needed for convergence in IR
+    cldamt1stguess     = 0.2    ! value of 1st guess cloud amount if cldLiq=1
+    iceamt1stguess     = 0.05   ! value of 1st guess ice amount if cldIce=1
+    ntemp              = 0       ! Number of eigenvectors for temperature
+    ngas               = 0,0,0,0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    nemmw              = 0      ! Number of eigenvectors for emissivity
+    nemir              = 0     ! Number of hinge points for retrieving IR emis [-1=all]
+    nCldLiq            = 0      ! Number of cloudLiq parameters (MW ignores Deff; non-scatter IR ignores all)
+    nCldIce            = 0      ! Number of cloudIce parameters
+    TightCLDcov        = 1.e-12 ! controls the degree of 'clear sky' (only when cldLiq=0)
+    logSize            = .FALSE. ! Retrieve cloud Deff logarithmically? FALSE=no, TRUE=yes
+ /
+
+
+
+
+
+
+
+
+
+
+
+

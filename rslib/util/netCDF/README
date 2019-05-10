@@ -1,0 +1,153 @@
+			Memo netCDF I/O Module
+			Date: November 6, 2002
+			     yhe@aer.com
+
+1. System
+
+   The module has been tested only on SGI platform.
+
+2. Files
+
+   FileName			Description
+   --------			-----------
+   GNUmakefile			makefile
+   alldata			executable (SGI)
+   test_ncdf_module.f		main caller
+   ncdf_module.f		ncdf module
+   test1.nc			testing data
+   test2.nc			testing data
+
+3. Build Executable
+
+   Type: gmake. The executable is called alldata.
+
+4. Features
+ 
+   The module can do I/O's on integer, real data double precision
+   and character type data from a scalar up to 3-D arrays. The 
+   main caller has the setups for all the data types. You are more
+   than welcome to incorporate your own arrays to test out the limit
+   of the routines. There are two blocks in the test_ncdf_module.f,
+   input and output. One should run the output to generate some data
+   files before using the input. 
+
+   It is unlikely that one should modify the modules,
+   ncdf_module. However, it may be benificial to get familiar 
+   with the module setup to some extent in order to utilize the
+   functionality more sufficiently and efficiently. Besides, it is an
+   open system. More functionalities will be added upon requests and
+   suggestions.
+
+5. Use of the Module
+
+   At the top of the main caller, include the following command line,
+
+   use ncdf_module
+
+5.1 Open and Write Data
+
+   To write the data to a new file (the current setup allows overwrite
+   to the existing file, be cautious!), there are three lines of code:
+
+   line 1: call openNcdfFile(fid, filename, status='new',
+			     unlimited_dim_name='nprofs' )
+   line 2: call writeNcdfData(fid, data, varName='varName',
+			      varLenName='varDim', varUnit='unit', 
+			      varLongName='varaible name',
+			      unlimited_dim=1, status='append')
+   line 3: call closeNcdfFile(fid, message)
+
+   fid = an integer representing the logic unit of the file being
+	 opened; 
+   filename = an valid string representing file name
+   status = a string for opening status (if this option is omitted,
+	    the file is opened for read. If 'new' is assigned to the
+	    status, the file is opened for write.)
+   unlimited_dim_name = a string representing the name of the dynamic
+			expandable dimension (for reading a file, this
+			option may be omitted).
+   varName = a string representing the variable being written.
+   varLenName = array of strings representing the dimension names for
+		the varaible. The size of string should be comfortable
+		with the number of dimensions of the variable.
+   varUnit = a string representing the physical unit, if applicable,
+	     of the variable.
+   varLongName = a string representing the extended (or detailed) name
+	       	 of the variable. 
+   unlimited_dim = an integer represnting the dimension by which the
+		   variable has the dynamic expandable size.
+   status = a string representing the writing status of the
+	    variable. Currently, there is one option ('append') plus the
+	    default value. By default, the data in the file are
+	    overwritten by the new input. If 'append' is entered, the
+	    data in the variable is attached to the existing data in the
+	    file.
+   message = a string to be printed out on the standard output when
+	     the file is closed. 
+
+   Please notice that 'fid', 'filename' and 'data' are mandatory while
+   all the others are optional. The optional variables should be given
+   based on the user's demands.
+ 
+5.2 Open and Read Data
+
+   To open an existing file, there are also just three lines.
+
+   line 1: call openNcdfFile(fid, filename)
+   line 2: call readNcdfData(fid2, intTmpBuf1D, varName='testVar1',
+                varLen=idim1, record_no=i, 
+                status='single_record')
+   line 3: call closeNcdfFile(fid, message)
+   
+   varlen = optional output which contains the vector length of the
+            variable named in varName.  If two-dimensional an integer
+            array of length 2 must be supplied in the calling statement.
+            The first element will contain the length of the first
+            dimension and the second element will contain the length
+            of the second dimension. 
+
+   record_no = an integer representing the i-th record in the dynamic
+	       expantable dimension to be read.
+   
+   status = a string that is used to distinguish the single record
+	    reading from the all record reading. Currently, only
+	    'single_record' is allowed.
+
+   These are optional, together with other options in 5.1. Please
+   follow the examples in the test routine for the various combination
+   of the applications.
+
+5.3 Open and Write Global Attributes
+
+   line 1: call openNcdfFile(fid, filename, status='new',
+			     unlimited_dim_name='nprofs' )
+   line 2: call writeNcdfAttr(fid, attr=Attributes,
+			     attrName='AttrName')
+   line 3: call close(fid, message)
+
+   Lines 1 and 3 are the same as in 5.1. 
+   attr = a string or a vector of real number(s), or integer(s)
+	  representing the attributes.
+   attrName = a string representing the name of the attribute to be
+	      written. 
+
+5.4 Open and Read Global Attributes
+
+   line 1: call openNcdfFile(fid, filename)
+   line 2: call readNcdfAttr(fid, attr=Attributes,
+			     attrName='AttrName')
+   line 3: call close(fid, message)
+
+   where attr is the returned vector with speficied attrName. 
+
+6. Example Program
+
+   The current example caller, test_ncdf_module.f, has all the data
+   types and array dimensions for testing purpose. To run the example,
+   type: gmake, to build the executable, alldata. Then, at the prompt
+   type the following commands: 
+   alldata -write(w) [<-read(r)]|[<-help(h)] 
+   to write, read or prompt the usage. One is more than welcome to
+   modify any part of the caller, test_ncdf_module.f, as to
+   incorporate all real application data into the test.
+

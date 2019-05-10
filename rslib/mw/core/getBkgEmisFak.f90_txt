@@ -1,0 +1,64 @@
+  SUBROUTINE getBkgEmis(iembkgflg,igeo,ifor)
+    USE scene_io_module
+    USE constants, only: MISSING_REAL
+    INTEGER, INTENT(IN) :: iembkgflg,igeo,ifor
+    INTEGER, SAVE       :: init=0,myNchan,ChanRef
+    CHARACTER(LEN=200)  :: F_FakEmissParams
+    INTEGER,PARAMETER   :: U_FakEmissParams=80
+    REAL, SAVE          :: targetSdDvEm=MISSING_REAL,targetSdDvEmCov=MISSING_REAL
+    REAL                :: factEm,factEmCov
+    TYPE(StateIndex_t), SAVE  :: IGfak,NGfak
+    REAL                :: myEmMw(mxchan)
+    NAMELIST /FakEmissParams/ targetSdDvEm,targetSdDvEmCov,ChanRef
+
+! targetSdDvEm is the target (intended, tuned) standard deviation of background 
+! error, referenced to channel ChanRef.  targetSdDvEm refers to the error of the
+! test scenes, assuming the test scenes come from the same population as was
+! used to create the background.  By default, it also drives the scaling of the
+! emissivity error covariance matrix.  If targetSdDvEmCov is also given,
+! then targetSdDvEmCov drives the scaling of the emissivity error covariance 
+! matrix.  When targetSdDvEmCov is given and is not equal to targetSdDvEm, this 
+! sumulates the case where the best-estimate of the emissivity background error
+! does not match reality.
+
+    xbakg_emissdb     = 0.
+    ut_mw_cov_emissdb = 0.
+    allocate(emissdb(1),covEmDb(1,1),emChgMetric(1),qcEmDb(1))
+    qcEmDb(1)=1   ! Deactivate subsequent processing of emis database variables
+    IF(iembkgflg.EQ.1 .and. igeo.gt.1) THEN  ! Does not apply over ocean
+       IF (init.eq.0) THEN
+          F_FakEmissParams='etc/FakEmissParams.in'
+          OPEN(U_FakEmissParams,file=F_FakEmissParams)
+          READ(U_FakEmissParams,FakEmissParams)
+          CLOSE(U_FakEmissParams)
+          call openScene(ncid=U_scene,file=F_scene,IG=IGfak,NG=NGfak, &
+            nchmw=myNchan)
+          if (targetSdDvEm /= MISSING_REAL) &
+            write(*,'(''msg:[BkgPrepModule::getBkgEmis]''/ &
+            ''Forcing emissivity std deviation to'',f8.5,'' for channel'', &
+            f8.3,''GHz pol'',i2)')targetSdDvEm,frq(ChanRef),pol(ChanRef)
+          init=1
+       ENDIF
+       call getScene(ncid=U_scene,irec=ifor,EmMw=myEmMw(1:myNchan))
+       if (targetSdDvEm < sqrt(ut_mw_cov_clim(npargAtm+ChanRef,npargAtm+ChanRef))) then !---only do if improves 
+          if (targetSdDvEm == MISSING_REAL) then
+             factEm= 1.
+          else
+             factEm= targetSdDvEm/ &
+                  sqrt(ut_mw_cov_clim(npargAtm+ChanRef,npargAtm+ChanRef))
+          endif
+          if (targetSdDvEmCov == MISSING_REAL) then
+             factEmCov=factEm**2
+          else
+             factEmCov= targetSdDvEmCov**2/ &
+                  ut_mw_cov_clim(npargAtm+ChanRef,npargAtm+ChanRef)
+          endif
+          xbakg_clim(iemmwg:iemmwg+myNchan-1)  = myEmMw(1:myNchan)*(1.-factEm)+ &
+               xbakg_clim(iemmwg:iemmwg+myNchan-1)*factEm
+          ut_mw_cov_clim(iemmwg:iemmwg+myNchan-1,iemmwg:iemmwg+myNchan-1)= &
+               ut_mw_cov_clim(iemmwg:iemmwg+myNchan-1,iemmwg:iemmwg+myNchan-1)*factEmCov
+       end if
+    END IF
+    RETURN
+  END SUBROUTINE getBkgEmis
+

@@ -1,0 +1,103 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#CrIMSS
+#
+#Copyright AER, Inc., 2017-. All rights Reserved.
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# common make definitions
+
+MAKE=gmake
+
+#This makefile uses the following environment variables: DEBUG, DOUBLE
+#DEBUG=true  #set DEBUG to true for debugging
+#DOUBLE=false #Promote all variables declared real or double to real*8 (64 bit).
+              #Variables declared real*4 are not changed (?true on all machines?)
+
+#$(DBG) is appended to the names of the library directories in rslib and to
+#the command names in the retrieval code. (if $(DEBUG) not true, then $DBG='')
+ifeq ($(strip $(DEBUG)),true)  
+        DBG=_debug
+else
+	DBG=
+endif
+
+#Define platform dependent compilation options
+platform :=$(shell uname -s | tr A-Z a-z)
+MACHINE  :=$(shell uname -m | tr A-Z a-z)
+PLATFORM := ${platform}_${MACHINE}
+OScontext :=$(shell cat /etc/redhat-release | tr A-Z a-z)
+OScentOS6 :=$(findstring centos release 6,$(OScontext))
+
+# Linux
+ifeq ($(platform),linux)
+	ifeq ($(MACHINE),x86_64)
+#		NETCDF_HOME=/usr/local/CentOS6
+		NETCDF_HOME=/nas/project/rs_sw/local/netcdf-4.4.0.fortran-4.4.4/gnu-4.7.netcdf4
+		HDF5=/nas/project/rs_sw/local/hdf5
+		GLNX = glnxa64
+	endif
+        
+#	FC = gfortran
+#	FC77 = gfortran
+	FC = /nas/project/rs_sw/local/gnu/gcc-4.7/bin/gfortran
+	FC77 = /nas/project/rs_sw/local/gnu/gcc-4.7/bin/gfortran
+	CCC = gcc
+	CFLAGS = -O3 -Wall
+
+        #-byteswapio byte swaps on I/O so that the Intel processor (LittleEndian) 
+        #can use the datafiles generated on an SGI (BigEndian) (? or visa versa?)
+
+	ifeq ($(MACHINE),ppc64)
+	     #applications optimized for 64-bit big-endian PowerPC and Power Architecture processors
+	else
+		LFFLAGS= -fconvert=big-endian -fno-second-underscore -fno-range-check 
+		shared = -shared
+	endif		  
+
+	ifeq ($(MACHINE),ppc64)
+	     #applications optimized for 64-bit big-endian PowerPC and Power Architecture processors
+	else
+            	ifeq ($(strip $(DEBUG)),true)
+            	#-g: generate symbolic debugging informantion and set optimization to 0
+            	#-Kieee: conform to IEEE 754 floating point division
+            	#-Ktrap=fp: fp=inv, divz, ovf:trap invalid operation, divide-by-zero
+            	#           and overflow
+            	#-Mlist: create a source code listing
+            	#-inform,inform: display all error messages: inform, warn, sever and fatal
+            	#-Mbounds: enable array bounds checking
+	            	LFFLAGS:= $(LFFLAGS) -g -fbounds-check
+        	else
+	            	LFFLAGS:= $(LFFLAGS) -O3 -Wall
+        	endif
+	endif
+
+        ifeq ($(strip $(DOUBLE)),true)
+           LFFLAGS:= $(LFFLAGS) -r8
+        endif
+
+	ifeq ($(MACHINE),ppc64)
+	     #applications optimized for 64-bit big-endian PowerPC and Power Architecture processors
+        endif
+endif   #Linux
+
+#paths
+INCLPATH = ${ROOTPATH}/include/${PLATFORM}${DBG}
+EXECPATH = ${ROOTPATH}/bin/${PLATFORM}${DBG}
+PREPPATH = ${ROOTPATH}/bin/${PLATFORM}${DBG}
+BANCPATH = ${ROOTPATH}/bin/${PLATFORM}${DBG}
+
+netCDF=$(NETCDF_HOME)
+
+#set loader
+LDR = $(FC)
+
+ifndef CCC
+        CCC = g++
+endif
+
+FFLAGS= $(LFFLAGS)
+
+#the variables RS_INCLUDES and RS_LIBS are used by the makefiles in the
+#retieval code.
+INCLUDES = -I${netCDF}/include
+LIBS =  -L${netCDF}/lib -lnetcdff -lnetcdf -L${HDF5}/lib -lhdf5_hl -lhdf5
+

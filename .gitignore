@@ -1,0 +1,6 @@
+irsensors/crimss/data/sensor_constants/*train*
+viirs_cloud_test
+irsensors/crimss/run/*nc
+irsensors/crimss/run/safe_nc
+irsensors/crimss/bin
+irsensors/crimss/include

@@ -1,0 +1,72 @@
+ &generalControl
+!    nprofs=500
+    nprofs=5
+    enableScatter = .FALSE.
+    statRetrOn=.FALSE.
+    MWretrOn=.TRUE.
+    primaryRetrOn=.TRUE.
+    secondaryRetrOn=.FALSE.
+    imgDataOn=.FALSE.
+    algConfig='data/input_param/standard_crimss_config.in'
+    bkgDataFiles='data/atmosphere/atmGlobalECMWF_O3fixed_scn_hybr101_atm5classandGlobal.nc',
+    	      'data/surface/cov_crims_sfc_v1_stdForm_rev2.nc',
+    	      'data/surface/cov_crims_sfc_v1_stdForm_rev2.nc'
+    RetrMWfile='data/L2/retr.mw.nc'
+    GuessFile='data/L2/guess.nc'
+!    AuxFile='data/L1b/aux.asc'
+    AuxFile='data/intermed/aux.nc'
+!    RadMWfile='data/L1b/radMW.nc'
+    RadMWfile='data/intermed/radMW.nc'
+!    RadIRfile='data/L1b/radIR.nc'
+    RadIRfile='data/L1b/SNDR.SNPP.CRIS.20150701T0212.m06.g023.L1B_NSR.std.v01_08.G.170428170559.nc'
+    RetrRegrFile='data/L2/retr.regr.nc'
+    RetrIRfile='data/L2/retr.ir.nc'
+    linInvertFile = 'NULL'
+    independentFOV= .TRUE.
+ /
+
+ &externControl
+    ldEmissExtern = 'NULL'
+    IRemissExtFile = 'NULL'
+    bkgrdExtern = 'NULL'    
+    extFlgTemp = .FALSE.
+    extFlgTskin = .FALSE.
+    extFlgPsfc = .FALSE.
+    extFlgWind = .FALSE.
+    extFlgCldLiq = .FALSE.
+    extFlgCldIce = .FALSE.
+    extFlgMol = .FALSE.,.FALSE.
+    extFlgEmIR=.FALSE.
+ /    
+
+ &sensorSpecific
+    nedtFile      ='data/instruments/NASAnoise.dat'
+    noiseReductFactFile='data/instruments/nrf_atms_ID2_fmt1.dat'
+    osscoefs_mw   ='data/rtm_coefficients/NPP-ATMS-clear-2V-M5.2-0.05K-R-v3.0'
+    ossoptdpth_mw ='data/rtm_coefficients/LUT-23-191-2V-M5.2-v3.0'
+    osscoefs_ir   ='data/rtm_coefficients/sel_cris_swap_ver1.2'
+    ossoptdpth_ir ='data/rtm_coefficients/odCrIS_swap_ver1.2'
+    osspred_ir = 'NULL'
+    classAtmosConfig ='etc/classAtmos.in'
+    classSfcMWconfig ='etc/classSfcMW.in'
+    classSfcIRconfig ='etc/classSfcIR.in'
+    chanFileName='data/instruments/crimss_atms_cris_allchannels.nc'
+    nednFile='data/instruments/pdr_noise.NEW.dat'
+ /
+
+ &RTinput
+    molOnRT = 'H2O','O3' ! gases turned on for radiative transfer
+    cloudTabFile='data/clouds/irCloudTab_iSz0.25_wSz0.25_iT10_Spec5_iDeff5-200_wDeff2-40_Wn640-2750_T170-270.nc'
+    solarfluxFile= 'data/rtm_coefficients/newkur.dat'
+    defProfFile='data/rtm_coefficients/defProfFile'
+    Planck2ndOrderTaylor = .TRUE.
+/
+
+ &statControl
+    regrFile='NULL'
+ /
+
+ &primaryControl
+    primaryMWon=.TRUE.
+    genLinInvert = .FALSE.
+ /

@@ -1,0 +1,36 @@
+#------------------------------------------------------------------------------
+#
+# NAME:
+#       make.rules
+#
+# PURPOSE:
+#       Unix make utility include file for definition of suffix and
+#       compilation rules
+#
+# LANGUAGE:
+#       GNU make
+#
+# CALLING SEQUENCE:
+#       include make.rules
+#
+#------------------------------------------------------------------------------
+
+.SUFFIXES: .f90 
+
+.SUFFIXES: .F
+
+%.o: %.f
+	$(FC) -c $(FFLAGS) $(INCLUDES) $<
+
+%.o: %.f90
+	$(FC) -c $(FFLAGS) $(INCLUDES) $<
+
+%.o: %.F
+	$(FC) -c $(FFLAGS) $(INCLUDES) $<
+
+%.o: %.c
+	$(CCC) -c $(CFLAGS) $(INCLUDES) $<
+
+%.o: %.C
+	$(CCC) -c $(CFLAGS) $(INCLUDES) $<
+

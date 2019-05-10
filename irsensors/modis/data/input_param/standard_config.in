@@ -1,0 +1,98 @@
+ &bkgtuning
+    backcldtopoc       = 550.   ! these values override what is in the background 
+    backcldtopld       = 600.   
+    backcldthkoc       = 100.	
+    backcldthkld       = 100.
+    backcldamtoc       = 0.0
+    backcldamtld       = 0.0
+    backclddeffoc      = 15.0
+    backclddeffld      = 15.0
+    varcldtopoc        = 30000. 
+    varcldtopld        = 22500.
+    varcldthkoc        = 1600.
+    varcldthkld        = 1.e-10
+    varcldamtoc        = 0.04
+    varcldamtld        = 0.04
+    varclddeffoc       = 25.0
+    varclddeffld       = 25.0
+    backicetopoc       = 250.   ! Background and covariance for IWP top and  
+    backicetopld       = 250.   ! thickness.  These values will override what
+    backicethkoc       = 50.    ! is in the background file.
+    backicethkld       = 50.
+    backiceamtoc       = 0.0
+    backiceamtld       = 0.0
+    backicedeffoc      = 50.0
+    backicedeffld      = 50.0
+    varicetopoc        = 40000.
+    varicetopld        = 22500.
+    varicethkoc        = 1600.
+    varicethkld        = 1.e-10
+    variceamtoc        = 0.01
+    variceamtld        = 0.01
+    varicedeffoc       = 500.0
+    varicedeffld       = 500.0
+    varTskinOc         = 1.     ! comment out to use cov without tuning
+    varTskinLd         = 9.     ! comment out to use cov without tuning
+ /
+
+ &guesslimits
+    cldcov             = 1.0e-12 ! covariance of clw when clw < 0
+    icecov             = 1.0e-12 ! covariance of iwp when iwp < 0
+    maxcldbasebak      = 900.   ! max pres val. allowed for cbase
+    htol               = 1.1    ! supersaturation tolerance in chkges
+    tmax               = 400.
+    tmin               = 50.    ! max and min temperature allowed in chkges
+    ctoplow            = 250.   ! lowest liqCloud top pressure allowed in chkges
+    icetoplow          = 100.   ! lowest iceCloud top pressure allowed in chkges
+    DeffLiqMin         = 2.     ! lowest liqCloud particleSize allowed in chkges
+    DeffIceMin         = 10.    ! lowest iceCloud particleSize allowed in chkges
+    DeffLiqMax         = 40.    ! highest liqCloud particleSize allowed in chkges
+    DeffIceMax         = 200.   ! highest iceCloud particleSize allowed in chkges
+    thickmin           = 25     ! lowest cloud thickness allowed in chkges
+    Pmin4SaturChk      = 5000.  ! lowest pressure 4 checking supersaturation in chkges 
+ /
+
+ &retrtuning
+    nxiterMw           = 9      ! maximum number of iterations
+    nxiter             = 15     ! maximum number of iterations
+    drad               = 0.0    ! rerr2=rerr**2 + drad**2
+    alpha1slope        = 3.0 	! slope = 1 / alpha1slope
+    alpha1int          = 1.4    ! alpha=float(mwiter)/alpha1slope + alpha1int
+    chisqconvMW        = 0.9    ! value of chisq needed for convergence in MW
+    chisqconv          = 1.0    ! value of chisq needed for convergence in IR
+    chisqRatioconv     = 999.   ! value of chisq ratio needed for convergence in IR
+    cldamt1stguess     = 0.01   ! 1st guess liquid amount
+    iceamt1stguess     = 0.005  ! 1st guess ice amount
+    nTskin             = 1      ! Retrieve Tskin? 0=no, 1=yes
+    ntemp              = 0      ! Number of eigenvectors for temperature
+    ngas               = 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+    nemmw              = 0      ! Number of eigenvectors for emissivity   
+    nemir              = 0      ! Number of hinge points for retrieving IR emis [-1=all]
+    nCldLiq            = 0      ! Number of cloudLiq parameters
+    nCldIce            = 4      ! Number of cloudIce parameters
+    TightCLDcov        = 1.e-12 ! controls the degree of 'clear sky' (only when cldLiq=0)
+    plandMaxOc         = 0.1    ! pland > plandMaxOc is not treated as ocean
+    logSize            = .FALSE. ! Retrieve cloud Deff logarithmically? FALSE=no, TRUE=yes
+ /
+
+ &finitediffdata
+    delCldLiqTop       = 0.1    ! fraction of pressure grid spacing 
+    delCldLiqThk       = 0.     ! fraction of pressure grid spacing
+    delCldLiqAmt       = 0.01   ! in units of mm
+    delCldLiqDeff      = 0.1    ! fraction of Deff
+    delCldIceTop       = 1.e-04 ! fraction of pressure grid spacing
+    delCldIceThk       = 0.     ! fraction of pressure grid spacing
+    delCldIceAmt       = 1.e-04 ! in units of kg/m^2
+    delCldIceDeff      = 0.1    ! fraction of Deff
+    delTskin           = 0.001  ! in units of K
+ /
+
+
+
+
+
+
+
+
+
+

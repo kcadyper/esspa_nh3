@@ -1,0 +1,102 @@
+ &stdContrl
+    nprofs=-1
+    debug=.FALSE.
+    mwCld=1
+    iCell=1
+    iembkgflg  = 0      !Flag to signal that EXTERNAL emissivity stats available
+    DynamicNoise = .FALSE.
+    enableScatter = .true.
+    molOnRT = 'H2O' ! gases turned on for radiative transfer
+    kchan=0,1,1,1,1,1,1,0,0,0,0,0,0,0,0
+    !!---For real data retrieval:
+    AuxFile='/nas/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/ModA.20080508.1745.NWP_Interp.aux.nc'
+    !!---For simulation:
+    !!AuxFile='run/ModA.20080508.1745.NWP_Interp.aux.asc'
+    RadFile='run/radMW.nc'
+ /
+
+ &SimFiles
+    Scenefile='/nas/data/rs/UR-Input/TestScenes/modis/bkg_subtrack_08may2008_nAtlantic.nc'
+    addNoise=.false.
+ /
+
+ &sensorSpecificFiles
+    nedtFile      ='/nas/data_cellar/cris/DataBases/Sensor/ATMS/NASAnoise.dat'
+    noiseReductFactFile='/nas/data_cellar/cris/DataBases/Sensor/ATMS/nrf_atms_fmt1.dat'
+    osscoefs      ='/nas/data/rs/UR-Input/OSS_model/MW/atms/osscoef_Ifit0_hybrid.bin'
+    ossoptdpth    ='/nas/data/rs/UR-Input/OSS_model/MW/atms/osslut_Ifit0_hybrid.bin'
+    coefsClassatm =''
+    coefsClasssfc =''
+ /
+
+ &externFiles
+    cloudTabFile='/nas/data/rs/UR-Input/CldModel/IR/irCloudTab_dispersionFromT_ConstantDg_Fmt2.nc'
+    ldEmissExtern = ''    
+    !!---For real data retrieval:
+    bkgrdExtern = '/nas/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/ModA.20080508.1745.NWP_Interp.nc'
+    !!---For simulation:
+    !!bkgrdExtern = '/nas/data/rs/UR-Input/TestScenes/modis/bkg_subtrack_08may2008_nAtlantic.nc'
+    extFlgTemp=.true.
+    extFlgPsfc=.true.
+    extFlgMol(1:1)=.true.
+ /    
+
+ &RetrFiles
+    algconfig='data/input_param/standard_config.in'
+    covarFile='/nas/data/rs/UR-Input/BackgroundStats/modis/cov_modis_atm_1mol_LiqIceCld_v1.nc','/nas/data_cellar/cris/DataBases/Statistics/extra_covariances/cov_crims_sfc_v1.nc'
+    QCFile='run/qc.asc'
+    RetrFile='run/retr.mw.nc'
+    GuessFile='run/guess.nc'
+    cascinfile=''
+    cascoutfile=''
+    SpecEmLUTfile= '' 
+ /
+
+ &IRinput
+    REGRESon=.FALSE.
+    PHYSon=.TRUE.
+    MWon=.false.
+    flagDynCldMask=.FALSE.
+    iStrat=3
+    ossScatRegrIRon=.true.
+    !!---For real data retrieval
+    RadIRFile='/nas/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/Cluster.nc'
+    !!---use local copy of radfile in run directory for simulations:
+    !!RadIRFile='run/Cluster.nc'
+    !!---For simulation:
+    !!RadIRFile='run/rad.ir.nc'
+    osscoefs_ir   ='/nas/data/rs/UR-Input/OSS_model/IR/MODIS/aqua/channel_allRngsb_allCldR_ang0-70.sel.sun'
+    ossoptdpth_ir ='/nas/data/rs/UR-Input/OSS_model/IR/MODIS/aqua/channel_allRngsb_allCldR_ang0-70.lut.sun'
+    osspred_ir = '/nas/data/rs/UR-Input/OSS_model/IR/MODIS/aqua/OutputFile_allRngsb_allCldR_thr=0.2K.sun'
+    chanFileName=''
+    nednFile='/nas/data/rs/UR-Input/SensorModel/modis/nedt_modis_comb_0.5K.dat'
+    solarfluxFile= '/nas/data_cellar/cris/DataBases/OSS/GENERIC/newkur.dat'
+    regrFile=''
+    RetrRegrFile='run/retr.regr.nc'
+    RetrIRFile='run/retr.ir.nc'
+    genLinInvert  = .TRUE.
+    linInvertFile = 'run/linInvert.nc'
+    extFlgEmIR=.FALSE.      !Flag to signal that IR emissivity available
+    IRemissExtFile='./emisdb_clust20080508.nc'
+ /
+
+ &EmisInput
+    nprofs=-1
+    emisDBaseBkgFile='/nas/data/rs/static_data/sfc_emissivity/MODIS/MYD11C3.A2008122.005.2008158001557_5km.nc'
+    srcFile='/nas/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/ModA.20080508.1745.rad.nc'
+    emisFile='./emisdb_clust20080508.nc'
+    clusterAvg=.TRUE.
+    clusterFile='/nas/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/Cluster.nc'
+ /
+
+ &enviofile
+    NWPFile='/nas/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/ModA.20080508.1745.NWP.nc'
+    clusterFile='/nas/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/Cluster.nc'
+    regrFile='/nas/data/rs/static_data/atm_profile/vert_extrap/data/merge.regres.26.101.nc'
+    sceneFile='run/ModA.20080508.1745.NWP_Interp.nc'
+    auxFile  ='run/ModA.20080508.1745.NWP_Interp.aux.nc'
+    auxFlag=.true.
+    clustAvgFlag=.true.
+    nProfs=-1
+    debug=.false.
+ /

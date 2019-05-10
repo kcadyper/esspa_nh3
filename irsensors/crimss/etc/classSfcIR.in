@@ -1,0 +1,5 @@
+ &classConfig
+    coefsClass =''
+    pLandMaxOc = 0.0  ! placeholder; TBR ; pland > plandMaxOc is not treated as ocean
+!    pLandMaxOc = 0.10  ! placeholder; TBR ; pland > plandMaxOc is not treated as ocean
+ /

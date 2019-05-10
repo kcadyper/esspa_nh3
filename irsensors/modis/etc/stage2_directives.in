@@ -1,0 +1,42 @@
+! ----------------------------------------------------------------------
+! This file is used to drive the execution of lin_modis, the FORTRAN
+! executable for stage 2 retrieval.
+! The locations of the file names should be changed as appropriate to
+! read the radiance, cluster and linear coefficients input for lin_modis.
+! ----------------------------------------------------------------------
+
+ &stage2Control
+    QCfactor=2.0
+    waveThreshold=2.4 ! to match wave numbers between radiance and linear coeffts files
+ /
+
+
+ &radFiles
+    radFileName='/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/ModA.20080508.1745.rad.nc'
+ ! The location of the radiance file
+ /
+
+ &clusterFiles
+    clusFileName='/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/Cluster.nc'
+ ! The location of the cluster file
+ /
+ 
+ &coefFiles
+    linCoefFileName='run/linInvert.nc'
+ ! The location of the linear coefficients data
+ /
+
+ &origFiles
+    originalFileName='/project/p1343/afwa1dvar/SampleData/20080508_1745/Cloud/ModA.20080508.1745.nc'
+ ! The location of the original satellite data  file
+ /
+
+ &stage2OutFiles
+    stage2OutFile='run/ModA.20080508.1745.stage2.nc'
+ ! The location of the retrieved results
+ /
+
+ &tempFiles
+    tempFileName='run/ModA.20080508.1745.dummy.nc'
+ ! The location of intermediate results for diagnostics purpose.
+ /

@@ -1,0 +1,166 @@
+#!/usr/bin/env python
+#$Id$
+############################################################
+# Script for CrIMSS
+#
+# Developed by: AER September 2017
+# Copyright: Atmospheric and Environmental Research, Inc., 2017
+############################################################
+# The code has been tested only on Linux
+CVS_TAG = "$Name$"
+
+import sys,re,types,os,getopt,string,cPickle
+
+try:sys.path.append(os.environ['PYTHONLIB'])
+except:
+    print 'unable to locate env var "PYTHONLIB"'
+    sys.exit(1)
+
+from exeLib import pyDictionary,pyEntry,pyOptions,pyIexe
+from applications import algExecTools
+
+optDict={'template':{'single':'t',
+                     'hasValue':1,
+                     'type':pyOptions.opString,
+                     'help':'Configuration template name'},
+         'debug':{'single':'d',
+                  'hasValue':0,
+                  'help':'turn debug log on',
+                  'value':0},
+         'directives':{'single':'a',
+                'hasValue':0,
+                'help':'generate default algorithm directives'},
+         'ppdirectives':{'single':'p',
+                'hasValue':0,
+                'help':'generate preproc directives'},
+         'sim':{'single':'S',
+                'hasValue':0,
+                'help':'invoke simulation only'},
+         'retr':{'single':'R',
+                 'hasValue':0,
+                 'help':'invoke retrieval only'},
+         'cfg':{'single':'c',
+                'hasValue':1,
+                'type':pyOptions.opString,
+                'help':'algorithm directive configuration',
+                'value':'$(etc)/crimss.alg.conf'},
+         'ppcfg':{'single':'k',
+                'hasValue':1,
+                'type':pyOptions.opString,
+                'help':'preproc directive configuration',
+                'value':'$(etc)/preproc.alg.conf'},
+         'sequence':{'single':'s',
+                     'hasValue':1,
+                     'type':pyOptions.opString,
+                     'help':'sequence database file; e.g. one+two',
+                     'value':[]},
+         'execlist':{'single':'x',
+                     'hasValue':1,
+                     'type':pyOptions.opString,
+                     'help':'execution name list database file',
+                     'value':'etc/crimss.simcore.exec'},
+         'execoptions':{'single':'o',
+                        'hasValue':1,
+                        'type':pyOptions.opString,
+                        'help':'execution sequence option field file',
+                        'value':'etc/crimss.exec.options'},
+         'dict':{'single':'D',
+                 'hasValue':1,
+                 'type':pyOptions.opString,
+                 'help':'import defined dictionary',
+                 'value':'etc/crimss.python.dict'},
+         'linkpath':{'single':'L',
+                     'hasValue':1,
+                     'type':pyOptions.opString,
+                     'help':'absolute path to link data for release',
+                     'value':''}
+         }
+
+if __name__ == '__main__':
+
+    debug=None; run=None;
+    defaultRun='./run'
+#    sceneroot    = d.get('dataPath')+'/TestScenes/crimss/placeholder_'
+    esym         = ['']
+
+    [s,n,r,v,m]=os.uname()
+
+    print "\nCrISS Script Running on",n,"("+s+")\n"
+
+    opt=pyOptions.options(optDict)
+    if opt.get('execlist'):
+        db={}
+        execfile(opt.get('execlist'),db)
+        execCell=db['execCell']
+    else:
+        print "err<crimsscl>: execlist field invalid"
+
+    algExec = algExecTools.algExecTools(opt.get('execlist'),
+                                        opt.get('execoptions'))
+
+
+    # update the dictionary with the default/optional inputs
+
+    d=pyDictionary.pyDictionary(opt.get('dict'))
+    d.update(opt.get())
+    d.update({'runPath':'$(run)'})
+    d.update({'defaultCfg':opt.get('cfg')})
+    d.update({'ARCH': algExec.platform()})
+
+    # Update the paths for the release version
+    if string.find(CVS_TAG,'release') >= 0:
+        d.update({'lib': '../lib',
+                  'dataPath': '../../data',
+                  'staticPath': '../../data/Static',
+                  'nwpPath': '../../data/nwp',
+                  'LiveStaticOption': 2})
+    else: pass
+
+    debug=d.get('debug')
+
+    if (opt.get('directives')):
+        # generate the default namelist only; do not run anything
+        print "generating "+d.get('namelist')
+        algExec.directives(debug,d)
+    elif (opt.get('ppdirectives')):
+        # generate the default namelist only; do not run anything
+        print "generating "+d.get('ppNamelist')
+        algExec.ppdirectives(debug,d)
+    else:
+        runroot      = './run/test_'
+        # Loop over environment
+        for ienv in esym:
+#            Scenefile = sceneroot+ienv+'_'+icld+'_2005.nc'
+#            runpath = runroot+ienv
+#            d.update({'run':runpath})
+            d.mkdir({'run':[d.get('run'),pyEntry.PATH,pyEntry.Private]})
+
+            print 'output directory: '+d.get('run')
+            if opt.get('sequence'):
+                print "Starting sequence ",opt.get('sequence')
+                sequence=algExec.sequence(opt.get('sequence'))
+            else:
+                print "Starting sequence ",execCell[0]
+                sequence=algExec.sequence(execCell[0])
+
+            if opt.get('linkpath'):
+                # build data links for release
+                linkPath = opt.get('linkpath')
+                d.update({'Scenefile': Scenefile})
+                algExec.buildlinks(d,linkPath)
+            else:
+                # execute the commmands
+                # endNotOK: if no "OK" statement is returned, then
+                #           =0: pass, =1: stop the sequence
+                # endError: if an error message is returned,
+                #     then =0: pass, =1: stop the sequence
+                # terminate: if error message is returned,
+                #     then =0: pass, =1: stop the script
+                # ecode = code returned from the application program.
+                #         script default=-999 (no code returned from
+                #         the application program)
+                ecode = algExec.execute(sequence,d,debug=debug,
+                                        endNotOK=0,endError=1,terminate=0)
+
+    print "...Done"
+    sys.exit(0)

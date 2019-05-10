@@ -1,0 +1,8 @@
+ &runGetL2
+   vCoordtyp='hybrid-sigma'
+   coordfile='data/atmosphere/sig-hyb_rt_coord.dat'
+   fIn='data/L2/SNDR.SNPP.CRIMSS.20150422T2024.m06.g205.L2_RET_CLIMCAPS_NSR.std.v01_23_01.J.180327133056.nc'
+   fOut='data/intermed/l2.nc'
+   fOutEmRf='data/intermed/l2.emiss.nc'
+   nout=12150
+/

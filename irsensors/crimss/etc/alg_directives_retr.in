@@ -1,0 +1,74 @@
+ &stdContrl
+    nprofs=2
+    debug=.FALSE.
+    mwCld=1
+    iCell=1
+    iembkgflg  = 0      !Flag to signal that EXTERNAL emissivity stats available
+    iextbkg    = 0      !Flag to signal that EXTERNAL stats available (non emiss)
+    icombine   = 0      !Flag to combine EXTERNAL and CLIMO stats
+    DynamicNoise = .FALSE.
+    kchan=1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+    AuxFile='run/aux.asc'
+    RadFile='/storm/cris/DataBases/SDRs/newcode/radMW.nc'
+ /
+
+ &SimFiles
+    Scenefile='/storm/cris/DataBases/standardTestScenes/newcode/scene.nc'
+    addNoise=.TRUE.
+ /
+
+ &sensorSpecificFiles
+    noiseParFile  ='/storm/cris/DataBases/Sensor/ATMS/NASAnoise.dat'
+    nedtFile      ='/storm/cris/DataBases/Sensor/ATMS/NASAnoise.dat'
+    noiseReductFactFile='/storm/cris/DataBases/Sensor/ATMS/nrf_scandepdt.dat'
+    osscoefs      ='/storm/cris/DataBases/OSS/ATMS/osscoef_trnsp.bin'
+    ossoptdpth    ='/storm/cris/DataBases/OSS/ATMS/osslut.dat'
+    coefsClassatm =''
+    coefsClasssfc =''
+ /
+
+ &externFiles
+    clwlutfile    = ''
+    ldEmissExtern = ''
+    bkgrdExtern   = ''
+ /    
+
+ &RetrFiles
+    algconfig='data/input_param/standard_crimss_config.in'
+    covarFile='/storm/cris/DataBases/Statistics/extra_covariances/classatm_v01.nc',
+    	      '/storm/cris/DataBases/Statistics/extra_covariances/classsfc_v01.nc'
+    QCFile='run/qc.asc'
+    RetrFile='run/retr.mw.nc'
+    GuessFile='run/guess.nc'
+    cascinfile=''
+    cascoutfile=''
+    SpecEmLUTfile= '' 
+ /
+
+ &IRinput
+    REGRESon=.FALSE.
+    PHYSon=.TRUE.
+    MWon=.TRUE.
+    ModChan=.TRUE.
+    iStrat=3
+    RadIRFile='/storm/cris/DataBases/SDRs/newcode/radIR.nc'
+    osscoefs_ir   ='/storm/cris/DataBases/OSS/CrIS/blackman/sel_cris_swap_ver1.2'
+    ossoptdpth_ir ='/storm/cris/DataBases/OSS/CrIS/blackman/odCrIS_swap_ver1.2'
+    chanFileName='/storm/cris/DataBases/Sensor/CrIS/channel/allchannels.new.dat'
+    nednFile='/storm/cris/DataBases/Sensor/CrIS/pdr_noise.NEW.dat'
+    solarfluxFile= '/storm/cris/DataBases/OSS/GENERIC/newkur.dat'
+    regrFile=''
+    RetrRegrFile='run/retr.regr.nc'
+    RetrIRFile='run/retr.ir.nc'
+ /
+
+
+
+
+
+
+
+
+
+
+

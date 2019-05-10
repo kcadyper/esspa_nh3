@@ -1,0 +1,8 @@
+ &runGetL2
+   vCoordtyp='hybrid-sigma'
+   coordfile='data/input_param/sig-hyb_rt_coord.dat'
+   fIn='/project/p1913/esspa4_l2/l2_data/SNDR.SNPP.CRIMSS.20150422T0800.m06.g081.L2_RET_CLIMCAPS_NSR.std.v01_23_01.J.180327125004.nc'
+   fOut='./run/l2.nc'
+   fOutEmRf='./run/l2.emiss.nc'
+   nout=12150
+/

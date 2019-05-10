@@ -1,0 +1,271 @@
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#CMIS
+#$Id$
+#Copyright AER, Inc., 2002, 2003. All rights Reserved.
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# common make definitions and system dependencies
+# CVS_TAG is to be filled with a delivery tag at the release
+CVS_TAG = $Name$
+TB_STATUS = $(findstring release, $(CVS_TAG))
+
+#set make
+MAKE=gmake
+
+#This makefile uses the following environment variables: DEBUG, DOUBLE
+#DEBUG=true  #set DEBUG to true for debugging
+#DOUBLE=false #Promote all variables declared real or double to real*8 (64 bit).
+			  #Variables declared real*4 are not changed (?true on all machines?)
+
+#$(DBG) is appended to the names of the library directories in rslib and to
+#the command names in the retrieval code. (if $(DEBUG) not true, then $DBG='')
+ifeq ($(strip $(DEBUG)),true)
+		DBG=_debug
+else
+	DBG=
+endif
+
+#Support build customization in make files that use makefile.common
+ifeq ($(strip $(CUSTOM)),AtmClass_BtDiff)
+     BUILD_VERSION=$(strip $(CUSTOM))
+else
+     BUILD_VERSION=default
+endif
+
+#Define platform dependent compilation options
+##platform :=$(shell uname -s)
+platform :=$(shell uname -s | tr A-Z a-z)
+MACHINE  :=$(shell uname -m | tr A-Z a-z)
+PLATFORM := ${platform}_${MACHINE}
+OScontext :=$(shell cat /etc/redhat-release | tr A-Z a-z)
+OScentOS5 :=$(findstring centos release 5,$(OScontext))
+OScentOS6 :=$(findstring centos release 6,$(OScontext))
+OSVERSION=other
+ifneq ($(OScentOS5),)
+		OSVERSION :=CentOS5
+endif
+ifneq ($(OScentOS6),)
+		OSVERSION :=CentOS6
+endif
+
+# Linux
+#--------------------------------------------------------
+#
+# NETCDF_HOME points to the netcdf library which has to be compiled with
+# selected compiler
+#
+#--------------------------------------------------------
+
+ifeq ($(platform),linux)
+	ifeq ($(MACHINE),i686)
+		NETCDF_HOME=/usr/local/netcdf/pgi
+		GLNX = glnx86
+	endif
+	ifeq ($(MACHINE),x86_64)
+		NETCDF_HOME=/usr/local/CentOS6
+		NETCDF_HOME=/nas/project/rs_sw/local/netcdf-4.4.0.fortran-4.4.4/gnu-4.7.netcdf4/
+		GLNX = glnxa64
+	endif
+
+        HDF5=/nas/project/rs_sw/local/hdf5
+
+	#Portland Group F90 compiler
+	#GFORT compiler
+	ifeq ($(OSVERSION),other)
+		FC = pgf90
+		FC77 = pgf77
+		CCC = pgcc
+		CFLAGS = -g -lpgftnrtl
+	endif
+	ifeq ($(OSVERSION),CentOS5)
+		FC = gfortran44
+		FC77 = gfortran44
+		CCC = gcc
+		CFLAGS = -O3 -Wall
+	endif
+	ifeq ($(OSVERSION),CentOS6)
+		# FC = gfortran
+		# FC77 = gfortran
+		FC = /nas/project/rs_sw/local/gnu/gcc-4.7/bin/gfortran
+		FC77 = /nas/project/rs_sw/local/gnu/gcc-4.7/bin/gfortran
+		CCC = gcc
+		CFLAGS = -O3 -Wall
+	endif
+
+	#-byteswapio byte swaps on I/O so that the Intel processor (LittleEndian)
+	#can use the datafiles generated on an SGI (BigEndian) (? or visa versa?)
+
+	MATLAB_HOME=/usr/local/matlab
+	MATLABLIB=${MATLAB_HOME}/extern/lib/${GLNX}
+	MATLABBIN=${MATLAB_HOME}/bin/${GLNX}
+	MATLABINCL=${MATLAB_HOME}/extern/include
+
+	MFLAGS = -shared -Wl,--version-script,$(MATLABLIB)/fexport.map \
+		 $(MATLABLIB)/version4.o \
+		 -Wl,--rpath-link,$(MATLABBIN) \
+		 -L$(MATLABBIN) \
+		 -lmx -lmex -lmat -lm
+
+	libmwrtm_c = -lm -lmwrtm_c
+
+	ifeq ($(MACHINE),ppc64)
+		LFFLAGS:= -qsource ###-qxlf90=nosignedzero -qinitauto -qzerosize
+		shared = -brtl -pic
+	else
+		ifeq ($(OSVERSION),other)
+			LFFLAGS:= -byteswapio -fPIC
+		else
+			LFFLAGS= -fconvert=big-endian -fno-second-underscore -fno-range-check
+		endif
+		shared = -shared
+	endif
+
+	ifeq ($(MACHINE),ppc64)
+		ifeq ($(strip $(DEBUG)),true)
+		#-g: generate symbolic debugging informantion and set optimization to 0
+			LFFLAGS:= $(LFFLAGS) -g -qcheck
+		else
+			LFFLAGS:= $(LFFLAGS) -O2
+		endif
+	else
+		ifeq ($(strip $(DEBUG)),true)
+			#-g: generate symbolic debugging informantion and set optimization to 0
+			#-Kieee: conform to IEEE 754 floating point division
+			#-Ktrap=fp: fp=inv, divz, ovf:trap invalid operation, divide-by-zero
+			#           and overflow
+			#-Mlist: create a source code listing
+			#-inform,inform: display all error messages: inform, warn, sever and fatal
+			#-Mbounds: enable array bounds checking
+			ifeq ($(OSVERSION),other)
+				LFFLAGS:= $(LFFLAGS) -g -Kieee -Ktrap=fp -Mlist -Minform,inform #-Mbounds
+			else
+				LFFLAGS:= $(LFFLAGS) -g -fbounds-check
+			endif
+			else
+				ifeq ($(OSVERSION),other)
+					LFFLAGS:= $(LFFLAGS) -O2 -Kieee
+			else
+					LFFLAGS:= $(LFFLAGS) -O3 -Wall
+			endif
+		endif
+	endif
+
+	ifeq ($(strip $(DOUBLE)),true)
+	   LFFLAGS:= $(LFFLAGS) -r8
+	endif
+
+	ifeq ($(MACHINE),ppc64)
+		FC=f90
+		FC77 = f77
+#        CC=g++ -g -pg
+#        CCC=g++ -g -pg
+#        LDR=g++ -g -pg
+#            CCOPTS= -Wall -DLinux -Df2cFortran -Dextname -Wno-deprecated
+		CC=cc -g -pg
+		CCC=cc -g -pg
+		OS=linux
+		ppcHDF5=/project/p1277/HDF5/ppce
+
+		NETCDF_HOME=/usr/local/netcdf/4.0/ibmxl32
+
+		LFFLAGS:=$(LFFLAGS)
+	endif
+endif   #Linux
+
+ifeq ($(TB_STATUS),)
+	 IRINCL = -I${RSLIB_HOME}/ir/include/${PLATFORM}${DBG}
+	 IRLIB = -L${RSLIB_HOME}/ir/bin/${PLATFORM}${DBG}
+	 IRCORE = -lircore
+	 IRRTM = -lirrtm
+	 IRNOISE = -lirnoise
+	#  Note: Currently irnoise is empty. WhenRSLIB_HOME/ir/sensor_model gets populated
+	#  again, uncomment the IRNOISE line above and remove the empty one below.
+	#     IRNOISE =
+	 IRIO = -lirio
+else
+	 IRINCL =
+	 IRLIB =
+	 IRCORE =
+	 IRRTM =
+	 IRNOISE =
+	 IRIO =
+endif
+
+ifeq ($(TB_STATUS),)
+	 MWRTMCINC = -I${RSLIB_HOME}/c/mw/include
+	 MWRTMC = ${libmwrtm_c}
+else
+	 MWRTMCINC =
+	 MWRTMC =
+#     MATLABINCL =
+#     MATLABLIB =
+endif
+
+netCDF=$(NETCDF_HOME)
+
+#set loader
+LDR = $(FC)
+
+ifndef CCC
+		CCC = g++
+endif
+
+ifeq ($(strip $(TIMING)),true)
+	## Timing experiement option, used with "gprof [executable] gmon.out"
+	## for timing profiles.
+	FFLAGS= $(LFFLAGS) -pg
+else
+	FFLAGS= $(LFFLAGS)
+endif
+
+OSSPATH:= $(RSLIB_HOME)/ossrtm
+OSSREF:=$(OSSPATH)/Makefile
+OSSINCL:=$(OSSPATH)/include/$(PLATFORM)
+
+#the variables RS_INCLUDES and RS_LIBS are used by the makefiles in the
+#retieval code.
+RS_INCLUDES = -I${MATLABINCL} \
+			  -I${netCDF}/include \
+			  -I$(OSSINCL) \
+			  -I${RSLIB_HOME}/mw/include/${PLATFORM}${DBG} \
+			  ${IRINCL} \
+			 -I${RSLIB_HOME}/util/include/${PLATFORM}${DBG} \
+			 ${MWRTMCINC}
+
+RS_LIBS =  -L${MATLABLIB} \
+		   -L${netCDF}/lib \
+		   -L${RSLIB_HOME}/mw/bin/${PLATFORM}${DBG} \
+			${IRLIB} \
+		   -L${RSLIB_HOME}/util/bin/${PLATFORM}${DBG} \
+		   -L${RSLIB_HOME}/c/mw/bin/${PLATFORM}${DBG} ${MWRTMC} \
+		   ${IRCORE} -lmwcore -linst -liomod -lNoise -lmwio -lmwrtm \
+		   ${IRRTM} ${IRNOISE} ${IRIO} -lretr -lncdf -lmisc -lstruct \
+		   -lmath -llapack -lnetcdff -lnetcdf -lref -L${HDF5}/lib -lhdf5_hl -lhdf5
+
+C_INCLUDES =  -I${netCDF}/include
+
+.SUFFIXES: .f90
+
+.SUFFIXES: .F
+
+ifeq ($(MACHINE),ppc64)
+%.o: %.f
+	$(FC) -c $(FFLAGS) -qfixed $(INCLUDES) $(RS_INCLUDES) $<
+else
+%.o: %.f
+	$(FC) -c $(FFLAGS) $(INCLUDES) $(RS_INCLUDES) $<
+endif
+
+%.o: %.f90
+	$(FC) -c $(FFLAGS) $(INCLUDES) $(RS_INCLUDES) $<
+
+%.o: %.f03
+	$(FC) -c $(FFLAGS) -std=f2003 $(INCLUDES) $(RS_INCLUDES) $<
+
+%.o: %.F
+	$(FC) -c $(FFLAGS) $(INCLUDES) $(RS_INCLUDES) $<
+
+%.o: %.c
+	$(CCC) -c $(CFLAGS) $(INCLUDES) $(RS_INCLUDES) $<
+
+%.o: %.C
+	$(CCC) -c $(CFLAGS) $(INCLUDES) $(RS_INCLUDES) $<

@@ -1,0 +1,5 @@
+The GranuleReadModule.f90 in use here cannot read the newer L2 files from the SIPS. I copied it from
+esspa9 so that I can run the India case. The version tagged for_delivery is the version that should be
+delivered and comes from esspa8. I made this change because the SIPS asked me to run a case over North America
+for which the L2 file had a different(new) dimension name: cld_lay instead of cld_top_pres
+

@@ -1,0 +1,86 @@
+#-------------------------------------------------------------------------------
+# Common rules for makefile
+#
+# Copyright AER, Inc., 2002, 2003. All rights Reserved.
+#-------------------------------------------------------------------------------
+
+ifeq ($(strip $(DEBUG)),true)  
+        DBG=_debug
+else
+	DBG=
+endif
+
+SHELL=/bin/sh
+MAKE=gmake
+
+MAIN_DIR := $(shell pwd)
+platform :=$(shell uname -s | tr A-Z a-z)
+MACHINE  :=$(shell uname -m | tr A-Z a-z)
+PLATFORM := ${platform}_${MACHINE}
+OScontext :=$(shell cat /etc/redhat-release | tr A-Z a-z)
+OScentOS6 :=$(findstring centos release 6,$(OScontext))
+OScentOS7 :=$(findstring centos release 7,$(OScontext))
+OSVERSION=other
+
+ifneq ($(OScentOS6),)
+        OSVERSION :=CentOS6
+endif
+ifneq ($(OScentOS7),)
+        OSVERSION :=CentOS7
+endif
+
+ifeq ($(MACHINE),x86_64)
+        NETCDF_HOME=/nas/project/rs_sw/local/netcdf-4.4.0.fortran-4.4.4/gnu-4.7
+endif
+
+ifeq ($(OSVERSION),CentOS6)
+#	FC = gfortran
+#	FC77 = gfortran
+	FC = /nas/project/rs_sw/local/gnu/gcc-4.7/bin/gfortran
+	FC77 = /nas/project/rs_sw/local/gnu/gcc-4.7/bin/gfortran
+        CCC = gcc
+        CFLAGS = -O3 -Wall
+endif
+ifeq ($(OSVERSION),CentOS7)
+	FC = gfortran
+	FC77 = gfortran
+        CCC = gcc
+        CFLAGS = -O3 -Wall
+endif
+
+LFFLAGS= -fPIC
+
+ifeq ($(strip $(DEBUG)),true)
+	LFFLAGS:= $(LFFLAGS) -g -fbounds-check
+else
+       	LFFLAGS:= $(LFFLAGS) -O3
+endif
+
+ifeq ($(strip $(DOUBLE)),true)
+   LFFLAGS:= $(LFFLAGS) -fdefault-real-8
+endif
+
+netCDF:= $(NETCDF_HOME)
+LDR:= $(FC)
+FFLAGS:= $(LFFLAGS)
+INCLUDES:= -I${netCDF}/include
+LIBS:= -L${netCDF}/lib -lnetcdf
+
+.SUFFIXES:
+.SUFFIXES: .o .f90 .f .cpp .c .cc
+
+.c.o:
+	$(CCC) -c  $(CFLAGS) $(INCLUDES) $<
+
+.cpp.o:
+	$(CCC) -c  $(CFLAGS) $(INCLUDES) $<
+
+.cc.o:
+	$(CCC) -c  $(CFLAGS) $(INCLUDES) $<
+
+.f90.o:
+	$(FC) -c $(LFFLAGS) $(INCLUDES) $<
+
+.f.o:
+	$(FC77) -c $(FCFLAGS) $(INCLUDES) $<
+

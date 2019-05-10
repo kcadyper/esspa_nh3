@@ -1,0 +1,48 @@
+CONPATH:=../common/constants
+SCTPATH:=../common/rtm_sctr
+CLDPATH:=../common/cloud
+
+vpath %.f90 $(CONPATH)
+vpath %.f90 $(SCTPATH)
+vpath %.f   $(SCTPATH)
+vpath %.c   $(SCTPATH)
+vpath %.f90 $(CLDPATH)
+
+
+CONSRC:= \
+	$(CONPATH)/OSSPhysicalConstant.f90 \
+	$(CONPATH)/OSSPracticalConstant.f90 
+
+SCTSRC:= \
+	$(SCTPATH)/type_kinds.f90 \
+	$(SCTPATH)/params_module.f90 \
+	$(SCTPATH)/subs_oss_addbl.f90 \
+	$(SCTPATH)/subs_oss_addbl_a.f90 \
+	$(SCTPATH)/oss_addbl_a.f90 \
+	$(SCTPATH)/oss_addbl.f90
+
+SCTSRCC = \
+	$(SCTPATH)/adStack.c
+
+SCTSRCF = \
+	$(SCTPATH)/adBuffer.f
+
+CLDSRC:= \
+	$(CLDPATH)/CloudParameters.f90 \
+	$(CLDPATH)/CloudDataStruct.f90 \
+	$(CLDPATH)/CloudNameDictionary.f90 \
+	$(CLDPATH)/CloudTab.f90 \
+	$(CLDPATH)/CloudModule.f90
+
+CONOBJ:= $(patsubst $(CONPATH)/%.f90,%.o,$(CONSRC))
+SCTOBJ:= $(patsubst $(SCTPATH)/%.f90,%.o,$(SCTSRC))
+CLDOBJ:= $(patsubst $(CLDPATH)/%.f90,%.o,$(CLDSRC))
+SCTOBJF:= $(patsubst $(SCTPATH)/%.f,%.o, $(SCTSRCF))
+SCTOBJC:= $(patsubst $(SCTPATH)/%.c,%.o, $(SCTSRCC))
+COMOBJ:= ${CONOBJ} ${SCTOBJ} ${SCTOBJF} ${SCTOBJC} ${CLDOBJ}
+
+$(CLDOBJ): $(CONSRC)
+$(SCTOBJ): $(CONSRC)
+$(SCTOBJ): $(SCTSRC)
+$(SCTOBJF): $(SCTSRC)
+$(SCTOBJC): $(SCTSRC)

@@ -1,0 +1,130 @@
+# $Id$
+
+# Dictionary of variable names
+
+bin=./bin
+binaux=../generic/bin
+etc=./etc
+# All the absolute paths such as lib, dataPath and staticPath will be
+# updated in the top-level script for the release version.
+lib=/project/p1913/esspa8/rslib
+parPath=./data/input_param
+dataPath=/nas/data/rs/UR-Input
+oldDataPath=/nas/data_cellar/cris/DataBases
+staticPath=/nas/data/rs/static_data
+ossFilePath=$(dataPath)/OSS_model
+ossFilePathMW=$(ossFilePath)/MW/atms
+#ossFilePathIR=$(ossFilePath)/IR/CrIS-FSR/2017
+ossFilePathIR=/project_static/p1913/oss_nsr
+#ossFileVers=_Ifit0_hybrid
+ossFileVers=2V-M5.2
+use2ndOrderPlanck=.FALSE.
+sensorModelPath=$(oldDataPath)/Sensor/ATMS
+sensorModelPathIR=./data/sensor_constants
+run=./run
+emisPath=$(staticPath)/sfc_emissivity/Prigent
+namelist=alg_directives.in
+namelist_l2=alg_directives.l2.in
+conf_l2 = crimss.l2.conf
+simlog=sim.log.asc
+retrlog=retr.log.asc
+
+######################
+# Algorithm directives
+######################
+nprofs=12150
+#nprofs=5000
+debugalg=.TRUE.
+mwCld=0
+icell=1
+#Flag to signal that EXTERNAL emissivity stats available
+iembkgflg=0
+Planck2ndOrderTaylor=.TRUE.
+DynamicNoise = .FALSE.
+molOnRT='H2O','NH3'
+#molOnRT='H2O'
+kchan=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+AuxFile=$(run)/aux.asc
+#RadMWfile=$(run)/radMW.nc
+RadMWfile=NULL
+RadIRfile=/nas/project_cellar/p1918/data/SNPP-GDISC/2016/01/14/crisl1b/SNDR.SNPP.CRIS.20160114T1000.m06.g101.L1B_NSR.std.v01_08.G.170215064334.nc
+#RadIRfile=$(run)/radIR.nc
+enableScatter=.FALSE.
+independentFOV=.TRUE.
+
+#SimFiles
+#Scenefile=/project/p1913/esspa/nh3_xa/senex_scene_with_nh3.exp.nc
+Scenefile=$(run)/l2.nc
+addNoise=.TRUE.
+
+#sensorSpecificFiles
+nedtFile=$(sensorModelPath)/NASAnoise.dat
+noiseReductFactFile=$(sensorModelPath)/nrf_atms_ID2_fmt1.dat
+osscoefs_mw=$(ossFilePathMW)/NPP-ATMS-clear-$(ossFileVers)-0.05K-R-v3.0
+ossoptdpth_mw=$(ossFilePathMW)/LUT-23-191-$(ossFileVers)-v3.0
+chanASCIIFileName=$(sensorModelPathIR)/cris_fsr_allchannels.new.dat
+chanFileName=$(sensorModelPathIR)/crimss_atms_cris_nh3_channels.nc
+#nednFile=$(sensorModelPathIR)/cris_fsr_noise.dat
+nednFile=$(oldDataPath)/Sensor/CrIS/pdr_noise.NEW.dat
+#osscoefs_ir=$(ossFilePathIR)/suomi-cris-fsr-B1B2B3-unapod-loc-cloudy-23V-M12.4-v1.0.train.sel
+#ossoptdpth_ir=$(ossFilePathIR)/suomi-cris-fsr-B1B2B3-unapod-loc-cloudy-23V-M12.4-v1.0.train.lut
+osscoefs_ir=$(ossFilePathIR)/CrIS.sel.cmpr_ver1.2
+ossoptdpth_ir=$(ossFilePathIR)/CrIS.od.cmpr_ver1.2
+
+osspred_ir=NULL
+solarfluxFile= $(oldDataPath)/OSS/GENERIC/newkur.dat
+defProfFile = $(oldDataPath)/OSS/GENERIC/defProfFile
+classAtmosConfig =$(etc)/classAtmosNH3.in
+classSfcMWconfig =$(etc)/classSfcMW.in
+classSfcIRconfig =$(etc)/classSfcIR.in
+
+#externFiles
+cloudTabFile=NULL
+emisFile=NULL
+#IRemissExtFile=/nas/project/p1913/esspa/nh3_xa/ir_constant_emiss.exp.nc
+IRemissExtFile=$(run)/l2.emiss.nc
+#extBkgFile=/nas/project/p1913/esspa/nh3_xa/senex_scene_with_nh3.exp.nc
+extBkgFile=$(run)/l2.nc
+extFlgTemp=.TRUE.
+extFlgTskin=.TRUE.
+extFlgPsfc=.TRUE.
+extFlgWind=.FALSE.
+extFlgCldLiq=.FALSE.
+extFlgCldIce=.FALSE.
+extFlgMol=.TRUE.
+extFlgEmIR=.TRUE.
+
+#RetrFiles
+algConfig=$(parPath)/NH3_crimss_config.in
+bkgDataAtm= ./data/input_param/nh3_bkg.nc
+bkgDataSfcMW=$(oldDataPath)/Statistics/extra_covariances/cov_crims_sfc_v1_stdForm_rev2.nc
+bkgDataSfcIR=$(oldDataPath)/Statistics/extra_covariances/cov_crims_sfc_v1_stdForm_rev2.nc
+RetrMWfile=$(run)/retr.mw.nc
+GuessFile=$(run)/guess.nc
+cascinfile=NULL
+cascoutfile=NULL
+
+#General control
+MWon=.FALSE.
+statRetrOn=.FALSE.
+MWretrOn=.FALSE.
+primaryRetrOn=.TRUE.
+secondaryRetrOn=.FALSE.
+imgDataOn=.FALSE.
+primaryMWon=.FALSE.
+regrFile=NULL
+RetrRegrFile=$(run)/retr.regr.nc
+RetrIRfile=$(run)/retr.ir.exp.nc
+genLinInvert= .FALSE.
+linInvertFile=NULL
+
+#Get L2 control
+vCoordtyp=hybrid-sigma
+coordFile = /project/p1918/alipton/sigma-hybrid/sig-hyb_rt_coord.dat
+fIn = /project/p1913/esspa4_l2/l2_data/SNDR.SNPP.CRIMSS.20160114T1000.m06.g101.L2_RET_CLIMCAPS_NSR.pge_verify.v01_28_00.J.180607174322.nc
+
+
+######################
+# directive generation
+######################
+directiveLog=directives.log.asc
